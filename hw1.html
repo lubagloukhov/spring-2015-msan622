@@ -74,7 +74,8 @@
     </style>
 
   </head>
-  <body>
+  <body bgcolor="white">
+
     <div class="container">
 
 <div id="tooltip" class="hidden">
@@ -178,12 +179,6 @@ x.domain(dataset.map(function(d) { return d.key; }));
 y.domain([0, d3.max(dataset, function(d) { return d.value; })]);
 
 var div = d3.select("body").append("div") .attr("class", "tooltip") .style("opacity", 0);
-
-
-svg.append("rect")
-    .attr("width", "100%")
-    .attr("height", "100%")
-    .attr("fill", "white");
 
 
 svg.append("g")
