@@ -179,6 +179,13 @@ y.domain([0, d3.max(dataset, function(d) { return d.value; })]);
 
 var div = d3.select("body").append("div") .attr("class", "tooltip") .style("opacity", 0);
 
+
+svg.append("rect")
+    .attr("width", "100%")
+    .attr("height", "100%")
+    .attr("fill", "white");
+
+
 svg.append("g")
     .attr("class", "x axis")
     .attr("transform","translate(0,"+(h-svgmargin)+")")
