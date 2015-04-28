@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Project Dataset</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/lubagloukhov/spring-2015-msan622">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/lubagloukhov/spring-2015-msan622/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/lubagloukhov/spring-2015-msan622/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+        <center>
+          <h2>Information Visualization</h2><h1>Project Sketch</h1>  
+          <h2>Speed Dating Dataset</h2>  
+          <a href="https://github.com/lubagloukhov"><h5>Luba Gloukhova</a> | <a href="mailto:lubagloukhov@gmail.com">lubagloukhov@gmail.com</h5></a>
+  
+          <p></p>
+        </center>
+          <hr>
+        </div>
+
+        <h3>
+
+
+<p> </p>
+
+
+<h3>Planned Tools</h3><br></br>
+<ul>
+  <p>D3</p>
+  <p>R [packages: reshape2, lubridate]</p>
+  <p>(Tableau)</p>
+  <p>(Python)</p>
+</ul>
+I plan on using R to preprocess the data for visualization in D3. I would like to explore combining D3 visualizations with Tableau visualizations as documented here: <a href="http://www.jeromecukier.net/blog/2012/07/02/embedding-tableau-visualizations-on-the-web/comment-page-1/">Embedding tableau visualizations on the web</a>. I am leaving open the possibility of supplementing my R-vased preprocessing with Python. <br></br>
+
+
+<h3>Planned Techniques</h3><br></br>
+<ul>
+  <li><p>Visualization 1: A visualization depicting what daters look for in the opposite sex versus what they think their fellow women (or men) look for in the opposite sex across different ranges of attractiveness as rated by their peers. I see this as best being depicted with a dual, horizontal bar plot similar to <a href="http://i.stack.imgur.com/0wJtt.png">this</a>. On the vertical axis I plot attractiveness ranges 0-1,1-2,2-3, etc... or percentile ranges such as bottom 10%, 10-20%, etc... of the variable <i>attr_o</i>. On the left hand horizontal axis I will plot a stacked bar of average scores for each of the following variables: attr4_1 (Attractive), sinc4_1 (Sincere), intel4_1 (Intelligent), fun4_1 (Fun), amb4_1 (Ambitious), shar4_1 (Shared Interests/Hobbies) indicating perceived desires in ta partner. On the right hand horizontal axis h as bottom 10%, 10-20%, etc... of the variable <i>attr_o</i>. On the left hand horizontal axis I will plot a stacked bar of average scores for each of the following variables: attr1_1 (Attractive), sinc1_1 (Sincere), intel1_1 (Intelligent), fun1_1 (Fun), amb1_1 (Ambitious), shar1_1 (Shared Interests/Hobbies) indicating personal desires in a partner. There will be sorting imlemented in this visualization. Clicking on a given attractiveness range will filter Visualization 2 described below. </p></li>
+  <li><p>Visualization 2: A visualization depicting average partner attribute ratings. This will be a non-stacked vertical bar plot. On the vertical axis I will plot the average score for each of the following variables: attr (Attractive), sinc (Sincere), intel (Intelligent), fun (Fun),amb (Ambitious), shar (Shared Interests/Hobbies). This plot will filter/sort by the attractiveness range chosen by clicking/interacting with Visualization 1. </p></li>
+  <li><p>Visualization 3: A visualizationd depicting the distribution of interest in various activities. The variables for which a separate box and whisker plot will be plotted will include: sports, tvsports, excersice, dining, museums, hiking, clubbing, tv, theater, movies, concerts, music, shopping, yoga... each of which is rates on a scale of 1-10 by the participants. The box and whisker plots will be faceted by gender/sex. Like the previous visualization, this will be sorted/filetred to only show the distribution for the attractiveness rane chosen by clicking/interacting with  Visualization 1.</p></li>
+
+</ul>
+
+<h3>Planned Interaction</h3><br></br>
+
+<ul>
+  <li><p>Filtering/ zooming as specified in Visualization 1, 2 and 3 descriptions above.</p></li>
+  <li><p>Sorting in Visualization 1.</p></li>
+  </ul>
+
+<h3>Planned Interface</h3><br></br>
+
+<img src="sketch/png">
+   
+
+
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
