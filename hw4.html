@@ -4,10 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>Information Visualization by Luba Gloukhova</title>
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script src="javascripts/respond.js"></script>
+
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
@@ -17,61 +14,1530 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
   </head>
+
+  <meta charset="UTF-8">
+<meta content="utf-8" http-equiv="encoding">
+   <style type="text/css">
+
+
+#pieChart {    
+  position:absolute;
+  top:10px;
+  left:10px;
+  width:400px;
+  height: 400px; 
+}
+
+
+
+#lineChart {    
+  position:absolute;
+  top:10px;
+  left:410px;
+  height: 150px;
+}
+
+#barChart {
+  position:absolute;
+  top:160px;
+  left:410px;
+  height: 250px;
+}
+
+.slice {
+   font-size: 12pt;
+   font-family: Verdana;
+   fill: white; //svg specific - instead of color
+   font-weight: bold; 
+      } 
+
+/*for line chart*/
+.axis path, .axis line {
+    fill: none;
+    stroke: black;
+    shape-rendering: crispEdges; 
+}
+
+.line {
+  fill: none;
+  /*stroke: steelblue;*/
+  stroke-width: 3px;
+
+  stroke-opacity: .25;
+}
+
+.dot {
+  /*fill: white;*/
+  /*stroke: steelblue;*/
+  stroke-width: 1.5px;
+  }
+        
+
+.axis text {
+    font-family: Verdana;
+    font-size: 11px;
+}
+
+.title {
+   font-family: Verdana;
+    font-size: 15px;  
+    
+}
+
+.xAxis {
+    font-family: verdana;
+    font-size: 11px;
+    fill: black;
+}  
+
+.yAxis {
+    font-family: verdana;
+    font-size: 11px;
+    fill: white;
+}
+
+  
+table {
+  border-collapse:collapse;
+  border: 0px;  
+  font-family: Verdana; 
+  color: #5C5558;
+  font-size: 12px;
+  text-align: right;      
+}
+
+td {
+  padding-left: 10px;   
+}
+
+#lineChartTitle1 {
+  font-family: Verdana;
+  font-size  : 14px;
+  fill       : lightgrey;
+  font-weight: bold;
+  text-anchor: middle;
+
+}
+
+#lineChartTitle2 {
+  font-family: Verdana;
+  font-size  : 50px;
+  fill       : grey;
+  text-anchor: middle;
+  font-weight: bold;
+  /*font-style: italic;*/
+}
+         
+    </style>
+
+
   <body>
-      <div id="header">
-        <nav>
-          <li class="fork"><a href="https://github.com/lubagloukhov/spring-2015-msan622">View On GitHub</a></li>
-          <li class="downloads"><a href="https://github.com/lubagloukhov/spring-2015-msan622/zipball/master">ZIP</a></li>
-          <li class="downloads"><a href="https://github.com/lubagloukhov/spring-2015-msan622/tarball/master">TAR</a></li>
-          <li class="title">DOWNLOADS</li>
-        </nav>
-      </div><!-- end header -->
 
-    <div class="wrapper">
+<h1 class="page-header">HW4 <small>Movies Dashboard Visualization</small></h1>
 
-      <section>
-        <div id="title">
-          <h1>Spring-2015-msan622</h1>
-          <p></p>
-          <hr>
-          <span class="credits left">Project maintained by <a href="https://github.com/lubagloukhov">lubagloukhov</a></span>
-        </div>
+<h3><a href="https://github.com/lubagloukhov">Luba Gloukhova</a> | <a href="mailto:lubagloukhov@gmail.com">lubagloukhov@gmail.com</a> | <a href="https://github.com/lubagloukhov/spring-2015-msan622/blob/gh-pages/hw4.html">HW4 GitHub</a>
+<br></h3>
 
-        <h3>
-<a id="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages" aria-hidden="true"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
+<svg id="CAL"></svg>
+<svg id="TIME"></svg>
 
-<p>My name is Luba Gloukhova. I am a student in USF's M.S. Analytics program. This is my MSAN 622 Information Visualization Site. When not deep diving into analytics, I enjoy practicing and teaching yoga. </p>
+<br><br>
+<h1>Data Preprocessing</h1>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
+I preprocessed the data in R. I subset the data to only include observations in the range of 2000 to 2004, inclusive. For each chart, I separately aggregated the data. For the left hand side plot, I calculate sthe proportion of falling into each of the 10 average-ratings buckets. For the upper right hand side plot, I calculated the number of observations falling into each of the aforementioned buckets crossed with each year in the aforementioned range. For the lower right hand side plot, I calculated the number of observations falling into each of the aforementioned buckets crossed with each genre. Additionally, I added an aggration (sum) across all average-ratings backets to assist the plotting of the two right hand side plots when no average-rating bucket is selected. 
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+<br><br>
 
-<h3>
-<a id="designer-templates" class="anchor" href="#designer-templates" aria-hidden="true"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
+<div style="overflow:auto;"><div class="geshifilter"><pre class="r geshifilter-R" style="font-family:monospace;"><a href="http://inside-r.org/r-doc/base/library"><span style="color: #003399; font-weight: bold;">library</span></a><span style="color: #009900;">&#40;</span>dplyr<span style="color: #009900;">&#41;</span>
+<a href="http://inside-r.org/r-doc/base/library"><span style="color: #003399; font-weight: bold;">library</span></a><span style="color: #009900;">&#40;</span><a href="http://inside-r.org/packages/cran/rjson"><span style="">rjson</span></a><span style="color: #009900;">&#41;</span>
+&nbsp;
+<a href="http://inside-r.org/r-doc/stats/df"><span style="color: #003399; font-weight: bold;">df</span></a> <span style="">&lt;-</span> <a href="http://inside-r.org/r-doc/base/data.frame"><span style="color: #003399; font-weight: bold;">data.frame</span></a><span style="color: #009900;">&#40;</span>movies<span style="color: #009900;">&#41;</span>
+<a href="http://inside-r.org/r-doc/stats/df"><span style="color: #003399; font-weight: bold;">df</span></a><span style="">$</span>ratingCat <span style="">&lt;-</span> <a href="http://inside-r.org/r-doc/base/cut"><span style="color: #003399; font-weight: bold;">cut</span></a><span style="color: #009900;">&#40;</span><a href="http://inside-r.org/r-doc/stats/df"><span style="color: #003399; font-weight: bold;">df</span></a><span style="">$</span>rating<span style="color: #339933;">,</span> breaks=<a href="http://inside-r.org/r-doc/base/seq"><span style="color: #003399; font-weight: bold;">seq</span></a><span style="color: #009900;">&#40;</span><span style="color: #cc66cc;">0</span><span style="color: #339933;">,</span><span style="color: #cc66cc;">10</span><span style="color: #009900;">&#41;</span><span style="color: #009900;">&#41;</span>
+<a href="http://inside-r.org/r-doc/stats/df"><span style="color: #003399; font-weight: bold;">df</span></a> <span style="">&lt;-</span> <a href="http://inside-r.org/r-doc/stats/df"><span style="color: #003399; font-weight: bold;">df</span></a><span style="color: #009900;">&#91;</span><a href="http://inside-r.org/r-doc/stats/df"><span style="color: #003399; font-weight: bold;">df</span></a><span style="">$</span>year<span style="">&gt;=</span><span style="color: #cc66cc;">2000</span><span style="color: #339933;">,</span><span style="color: #009900;">&#93;</span>
+<a href="http://inside-r.org/r-doc/stats/df"><span style="color: #003399; font-weight: bold;">df</span></a> <span style="">&lt;-</span> <a href="http://inside-r.org/r-doc/stats/df"><span style="color: #003399; font-weight: bold;">df</span></a><span style="color: #009900;">&#91;</span><a href="http://inside-r.org/r-doc/stats/df"><span style="color: #003399; font-weight: bold;">df</span></a><span style="">$</span>year<span style="">&lt;</span><span style="color: #cc66cc;">2005</span><span style="color: #339933;">,</span><span style="color: #009900;">&#93;</span>
+&nbsp;
+<span style="color: #666666; font-style: italic;"># LHS</span>
+&nbsp;
+pieData <span style="">&lt;-</span> <a href="http://inside-r.org/r-doc/stats/df"><span style="color: #003399; font-weight: bold;">df</span></a> %.% 
+  dplyr<span style="">::</span>group_by<span style="color: #009900;">&#40;</span>ratingCat<span style="color: #009900;">&#41;</span> %.%
+  dplyr<span style="">::</span>summarise<span style="color: #009900;">&#40;</span><a href="http://inside-r.org/r-doc/base/length"><span style="color: #003399; font-weight: bold;">length</span></a><span style="color: #009900;">&#40;</span>rating<span style="color: #009900;">&#41;</span><span style="">/</span>nrow<span style="color: #009900;">&#40;</span><a href="http://inside-r.org/r-doc/stats/df"><span style="color: #003399; font-weight: bold;">df</span></a><span style="color: #009900;">&#41;</span><span style="color: #009900;">&#41;</span>
+<a href="http://inside-r.org/r-doc/base/names"><span style="color: #003399; font-weight: bold;">names</span></a><span style="color: #009900;">&#40;</span>pieData<span style="color: #009900;">&#41;</span><span style="">&lt;-</span> <a href="http://inside-r.org/r-doc/base/c"><span style="color: #003399; font-weight: bold;">c</span></a><span style="color: #009900;">&#40;</span><span style="color: #0000ff;">&quot;category&quot;</span><span style="color: #339933;">,</span> <span style="color: #0000ff;">&quot;measure&quot;</span><span style="color: #009900;">&#41;</span>
+&nbsp;
+x <span style="">&lt;-</span> toJSON<span style="color: #009900;">&#40;</span><a href="http://inside-r.org/r-doc/base/unname"><span style="color: #003399; font-weight: bold;">unname</span></a><span style="color: #009900;">&#40;</span><a href="http://inside-r.org/r-doc/base/split"><span style="color: #003399; font-weight: bold;">split</span></a><span style="color: #009900;">&#40;</span>pieData<span style="color: #339933;">,</span> <span style="color: #cc66cc;">1</span><span style="">:</span><a href="http://inside-r.org/r-doc/base/nrow"><span style="color: #003399; font-weight: bold;">nrow</span></a><span style="color: #009900;">&#40;</span>pieData<span style="color: #009900;">&#41;</span><span style="color: #009900;">&#41;</span><span style="color: #009900;">&#41;</span><span style="color: #009900;">&#41;</span>
+<a href="http://inside-r.org/r-doc/base/cat"><span style="color: #003399; font-weight: bold;">cat</span></a><span style="color: #009900;">&#40;</span>x<span style="color: #009900;">&#41;</span>
+&nbsp;
+<span style="color: #666666; font-style: italic;"># RHS - top </span>
+&nbsp;
+lineData = <a href="http://inside-r.org/r-doc/stats/df"><span style="color: #003399; font-weight: bold;">df</span></a><span style="color: #009900;">&#91;</span><a href="http://inside-r.org/r-doc/base/c"><span style="color: #003399; font-weight: bold;">c</span></a><span style="color: #009900;">&#40;</span><span style="color: #0000ff;">&quot;year&quot;</span><span style="color: #339933;">,</span> <span style="color: #0000ff;">&quot;ratingCat&quot;</span><span style="color: #339933;">,</span><span style="color: #0000ff;">&quot;title&quot;</span><span style="color: #009900;">&#41;</span><span style="color: #009900;">&#93;</span>
+&nbsp;
+lineData2 <span style="">&lt;-</span> lineData %.% 
+  dplyr<span style="">::</span>group_by<span style="color: #009900;">&#40;</span>ratingCat<span style="color: #339933;">,</span> year<span style="color: #009900;">&#41;</span> %.%
+  dplyr<span style="">::</span>summarise<span style="color: #009900;">&#40;</span><a href="http://inside-r.org/r-doc/base/length"><span style="color: #003399; font-weight: bold;">length</span></a><span style="color: #009900;">&#40;</span><a href="http://inside-r.org/r-doc/graphics/title"><span style="color: #003399; font-weight: bold;">title</span></a><span style="color: #009900;">&#41;</span><span style="color: #009900;">&#41;</span>
+&nbsp;
+<a href="http://inside-r.org/r-doc/base/names"><span style="color: #003399; font-weight: bold;">names</span></a><span style="color: #009900;">&#40;</span>lineData2<span style="color: #009900;">&#41;</span> <span style="">&lt;-</span> <a href="http://inside-r.org/r-doc/base/c"><span style="color: #003399; font-weight: bold;">c</span></a><span style="color: #009900;">&#40;</span><span style="color: #0000ff;">&quot;ratingCat&quot;</span><span style="color: #339933;">,</span><span style="color: #0000ff;">&quot;year&quot;</span><span style="color: #339933;">,</span> <span style="color: #0000ff;">&quot;nObs&quot;</span><span style="color: #009900;">&#41;</span>
+&nbsp;
+lineData3 <span style="">&lt;-</span> lineData2 %.% 
+  dplyr<span style="">::</span>group_by<span style="color: #009900;">&#40;</span>year<span style="color: #009900;">&#41;</span> %.%
+  dplyr<span style="">::</span>summarise<span style="color: #009900;">&#40;</span><a href="http://inside-r.org/r-doc/base/sum"><span style="color: #003399; font-weight: bold;">sum</span></a><span style="color: #009900;">&#40;</span>nObs<span style="color: #009900;">&#41;</span><span style="color: #009900;">&#41;</span>
+lineData3<span style="">$</span>ratingCat <span style="">&lt;-</span> <span style="color: #0000ff;">&quot;All&quot;</span>
+lineData3 <span style="">&lt;-</span> lineData3<span style="color: #009900;">&#91;</span><span style="color: #339933;">,</span><a href="http://inside-r.org/r-doc/base/c"><span style="color: #003399; font-weight: bold;">c</span></a><span style="color: #009900;">&#40;</span><span style="color: #cc66cc;">3</span><span style="color: #339933;">,</span><span style="color: #cc66cc;">1</span><span style="color: #339933;">,</span><span style="color: #cc66cc;">2</span><span style="color: #009900;">&#41;</span><span style="color: #009900;">&#93;</span>
+&nbsp;
+<a href="http://inside-r.org/r-doc/base/names"><span style="color: #003399; font-weight: bold;">names</span></a><span style="color: #009900;">&#40;</span>lineData3<span style="color: #009900;">&#41;</span> <span style="">&lt;-</span> <a href="http://inside-r.org/r-doc/base/c"><span style="color: #003399; font-weight: bold;">c</span></a><span style="color: #009900;">&#40;</span><span style="color: #0000ff;">&quot;ratingCat&quot;</span><span style="color: #339933;">,</span><span style="color: #0000ff;">&quot;year&quot;</span><span style="color: #339933;">,</span> <span style="color: #0000ff;">&quot;nObs&quot;</span><span style="color: #009900;">&#41;</span>
+&nbsp;
+lineData4 <span style="">&lt;-</span> <a href="http://inside-r.org/r-doc/base/rbind"><span style="color: #003399; font-weight: bold;">rbind</span></a><span style="color: #009900;">&#40;</span>lineData3<span style="color: #339933;">,</span>lineData2<span style="color: #009900;">&#41;</span>
+&nbsp;
+<a href="http://inside-r.org/r-doc/base/names"><span style="color: #003399; font-weight: bold;">names</span></a><span style="color: #009900;">&#40;</span>lineData4<span style="color: #009900;">&#41;</span> <span style="">&lt;-</span> <a href="http://inside-r.org/r-doc/base/c"><span style="color: #003399; font-weight: bold;">c</span></a><span style="color: #009900;">&#40;</span><span style="color: #0000ff;">&quot;group&quot;</span><span style="color: #339933;">,</span><span style="color: #0000ff;">&quot;category&quot;</span><span style="color: #339933;">,</span> <span style="color: #0000ff;">&quot;measure&quot;</span><span style="color: #009900;">&#41;</span>
+&nbsp;
+x <span style="">&lt;-</span> toJSON<span style="color: #009900;">&#40;</span><a href="http://inside-r.org/r-doc/base/unname"><span style="color: #003399; font-weight: bold;">unname</span></a><span style="color: #009900;">&#40;</span><a href="http://inside-r.org/r-doc/base/split"><span style="color: #003399; font-weight: bold;">split</span></a><span style="color: #009900;">&#40;</span>lineData4<span style="color: #339933;">,</span> <span style="color: #cc66cc;">1</span><span style="">:</span><a href="http://inside-r.org/r-doc/base/nrow"><span style="color: #003399; font-weight: bold;">nrow</span></a><span style="color: #009900;">&#40;</span>lineData4<span style="color: #009900;">&#41;</span><span style="color: #009900;">&#41;</span><span style="color: #009900;">&#41;</span><span style="color: #009900;">&#41;</span>
+&nbsp;
+<a href="http://inside-r.org/r-doc/base/sink"><span style="color: #003399; font-weight: bold;">sink</span></a><span style="color: #009900;">&#40;</span><span style="color: #0000ff;">&quot;lineData.txt&quot;</span><span style="color: #009900;">&#41;</span>
+<a href="http://inside-r.org/r-doc/base/cat"><span style="color: #003399; font-weight: bold;">cat</span></a><span style="color: #009900;">&#40;</span>x<span style="color: #009900;">&#41;</span>
+<a href="http://inside-r.org/r-doc/base/sink"><span style="color: #003399; font-weight: bold;">sink</span></a><span style="color: #009900;">&#40;</span><span style="color: #009900;">&#41;</span>
+&nbsp;
+<span style="color: #666666; font-style: italic;"># RHS - bottom</span>
+&nbsp;
+barData = <a href="http://inside-r.org/r-doc/stats/df"><span style="color: #003399; font-weight: bold;">df</span></a><span style="color: #009900;">&#91;</span><a href="http://inside-r.org/r-doc/base/c"><span style="color: #003399; font-weight: bold;">c</span></a><span style="color: #009900;">&#40;</span><span style="color: #0000ff;">&quot;Action&quot;</span><span style="color: #339933;">,</span> <span style="color: #0000ff;">&quot;Animation&quot;</span><span style="color: #339933;">,</span> <span style="color: #0000ff;">&quot;Comedy&quot;</span><span style="color: #339933;">,</span> <span style="color: #0000ff;">&quot;Drama&quot;</span><span style="color: #339933;">,</span> <span style="color: #0000ff;">&quot;Documentary&quot;</span><span style="color: #339933;">,</span> <span style="color: #0000ff;">&quot;Romance&quot;</span><span style="color: #339933;">,</span> 
+               <span style="color: #0000ff;">&quot;Short&quot;</span><span style="color: #339933;">,</span> <span style="color: #0000ff;">&quot;ratingCat&quot;</span><span style="color: #339933;">,</span><span style="color: #0000ff;">&quot;title&quot;</span><span style="color: #009900;">&#41;</span><span style="color: #009900;">&#93;</span>
+<a href="http://inside-r.org/r-doc/utils/head"><span style="color: #003399; font-weight: bold;">head</span></a><span style="color: #009900;">&#40;</span>barData2<span style="color: #009900;">&#41;</span>
+barData2 <span style="">&lt;-</span> melt<span style="color: #009900;">&#40;</span>barData<span style="color: #339933;">,</span> id=<a href="http://inside-r.org/r-doc/base/c"><span style="color: #003399; font-weight: bold;">c</span></a><span style="color: #009900;">&#40;</span><span style="color: #0000ff;">&quot;ratingCat&quot;</span><span style="color: #339933;">,</span><span style="color: #0000ff;">&quot;title&quot;</span><span style="color: #009900;">&#41;</span><span style="color: #009900;">&#41;</span>
+&nbsp;
+barData3 <span style="">&lt;-</span> barData2 %.% 
+  dplyr<span style="">::</span>group_by<span style="color: #009900;">&#40;</span>ratingCat<span style="color: #339933;">,</span> variable<span style="color: #009900;">&#41;</span> %.%
+  dplyr<span style="">::</span>summarise<span style="color: #009900;">&#40;</span><a href="http://inside-r.org/r-doc/base/sum"><span style="color: #003399; font-weight: bold;">sum</span></a><span style="color: #009900;">&#40;</span>value<span style="color: #009900;">&#41;</span><span style="color: #009900;">&#41;</span>
+&nbsp;
+<a href="http://inside-r.org/r-doc/base/names"><span style="color: #003399; font-weight: bold;">names</span></a><span style="color: #009900;">&#40;</span>barData3<span style="color: #009900;">&#41;</span> <span style="">&lt;-</span> <a href="http://inside-r.org/r-doc/base/c"><span style="color: #003399; font-weight: bold;">c</span></a><span style="color: #009900;">&#40;</span><span style="color: #0000ff;">&quot;ratingCat&quot;</span><span style="color: #339933;">,</span><span style="color: #0000ff;">&quot;genre&quot;</span><span style="color: #339933;">,</span> <span style="color: #0000ff;">&quot;nObs&quot;</span><span style="color: #009900;">&#41;</span>
+&nbsp;
+barData4 <span style="">&lt;-</span> barData3 %.% 
+  dplyr<span style="">::</span>group_by<span style="color: #009900;">&#40;</span>genre<span style="color: #009900;">&#41;</span> %.%
+  dplyr<span style="">::</span>summarise<span style="color: #009900;">&#40;</span><a href="http://inside-r.org/r-doc/base/sum"><span style="color: #003399; font-weight: bold;">sum</span></a><span style="color: #009900;">&#40;</span>nObs<span style="color: #009900;">&#41;</span><span style="color: #009900;">&#41;</span>
+barData4<span style="">$</span>ratingCat <span style="">&lt;-</span> <span style="color: #0000ff;">&quot;All&quot;</span>
+barData4 <span style="">&lt;-</span> barData4<span style="color: #009900;">&#91;</span><span style="color: #339933;">,</span><a href="http://inside-r.org/r-doc/base/c"><span style="color: #003399; font-weight: bold;">c</span></a><span style="color: #009900;">&#40;</span><span style="color: #cc66cc;">3</span><span style="color: #339933;">,</span><span style="color: #cc66cc;">1</span><span style="color: #339933;">,</span><span style="color: #cc66cc;">2</span><span style="color: #009900;">&#41;</span><span style="color: #009900;">&#93;</span>
+&nbsp;
+<a href="http://inside-r.org/r-doc/base/names"><span style="color: #003399; font-weight: bold;">names</span></a><span style="color: #009900;">&#40;</span>barData4<span style="color: #009900;">&#41;</span> <span style="">&lt;-</span> <a href="http://inside-r.org/r-doc/base/c"><span style="color: #003399; font-weight: bold;">c</span></a><span style="color: #009900;">&#40;</span><span style="color: #0000ff;">&quot;ratingCat&quot;</span><span style="color: #339933;">,</span><span style="color: #0000ff;">&quot;genre&quot;</span><span style="color: #339933;">,</span> <span style="color: #0000ff;">&quot;nObs&quot;</span><span style="color: #009900;">&#41;</span>
+&nbsp;
+barData5 <span style="">&lt;-</span> <a href="http://inside-r.org/r-doc/base/rbind"><span style="color: #003399; font-weight: bold;">rbind</span></a><span style="color: #009900;">&#40;</span>barData3<span style="color: #339933;">,</span>barData4<span style="color: #009900;">&#41;</span>
+&nbsp;
+<a href="http://inside-r.org/r-doc/base/names"><span style="color: #003399; font-weight: bold;">names</span></a><span style="color: #009900;">&#40;</span>barData5<span style="color: #009900;">&#41;</span> <span style="">&lt;-</span> <a href="http://inside-r.org/r-doc/base/c"><span style="color: #003399; font-weight: bold;">c</span></a><span style="color: #009900;">&#40;</span><span style="color: #0000ff;">&quot;group&quot;</span><span style="color: #339933;">,</span><span style="color: #0000ff;">&quot;category&quot;</span><span style="color: #339933;">,</span> <span style="color: #0000ff;">&quot;measure&quot;</span><span style="color: #009900;">&#41;</span>
+&nbsp;
+<a href="http://inside-r.org/r-doc/utils/write.csv"><span style="color: #003399; font-weight: bold;">write.csv</span></a><span style="color: #009900;">&#40;</span>barData5<span style="color: #339933;">,</span> <span style="color: #0000ff;">&quot;barData.csv&quot;</span><span style="color: #339933;">,</span> <a href="http://inside-r.org/r-doc/base/row.names"><span style="color: #003399; font-weight: bold;">row.names</span></a>=F<span style="color: #009900;">&#41;</span>
+&nbsp;
+x <span style="">&lt;-</span> toJSON<span style="color: #009900;">&#40;</span><a href="http://inside-r.org/r-doc/base/unname"><span style="color: #003399; font-weight: bold;">unname</span></a><span style="color: #009900;">&#40;</span><a href="http://inside-r.org/r-doc/base/split"><span style="color: #003399; font-weight: bold;">split</span></a><span style="color: #009900;">&#40;</span>barData5<span style="color: #339933;">,</span> <span style="color: #cc66cc;">1</span><span style="">:</span><a href="http://inside-r.org/r-doc/base/nrow"><span style="color: #003399; font-weight: bold;">nrow</span></a><span style="color: #009900;">&#40;</span>barData5<span style="color: #009900;">&#41;</span><span style="color: #009900;">&#41;</span><span style="color: #009900;">&#41;</span><span style="color: #009900;">&#41;</span>
+<a href="http://inside-r.org/r-doc/base/cat"><span style="color: #003399; font-weight: bold;">cat</span></a><span style="color: #009900;">&#40;</span>x<span style="color: #009900;">&#41;</span></pre></div></div><p><a href="http://www.inside-r.org/pretty-r" title="Created by Pretty R at inside-R.org">Created by Pretty R at inside-R.org</a></p>
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+<br><br>
 
-<h3>
-<a id="rather-drive-stick" class="anchor" href="#rather-drive-stick" aria-hidden="true"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+<script type='text/javascript' src='https://public.tableau.com/javascripts/api/viz_v1.js'></script><div class='tableauPlaceholder' style='width: 654px; height: 742px;'><noscript><a href='#'><img alt='Dashboard 2 ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Bo&#47;Book1fdsafa&#47;Dashboard2&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz' width='654' height='742' style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='site_root' value='' /><param name='name' value='Book1fdsafa&#47;Dashboard2' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Bo&#47;Book1fdsafa&#47;Dashboard2&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='showVizHome' value='no' /><param name='showTabs' value='y' /><param name='bootstrapWhenNotified' value='true' /></object></div>
 
-<h3>
-<a id="authors-and-contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
 
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+<br><br>
 
-<h3>
-<a id="support-or-contact" class="anchor" href="#support-or-contact" aria-hidden="true"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
 
-<p>Having trouble with Pages? Check out the documentation at <a href="https://help.github.com/pages">https://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
-      </section>
+<h1>Functionality Overview</h1>
+
+I have implemented C, B and A-level functionality. I have chosen to detail how the number of movies rated and the distribution of genres varies by rating category (0-1,1-2,2-3,...). Though the donut chart is not ideal stylistically, I was not able to implement the single-bar stacked plot that I had prototyped in Tableau. The goruping used to create stacked bars in D3 reaks when there is only one group defined. <br>
+<h3>Basic (C-level) Functionality</h3>
+    <ul><li><p>prototype of the dashboard in Tableau Public</p></li></ul>
+<h3>Moderate (B-level) Functionality</h3>
+    <ul><li><p>implemented prototype in D3</p></li></ul>
+<h3>Advanced (A-Level) Functionality</h3>
+    <ul> <li> <p>implemented interactivity between panels: when a category portion of the donut is clicked, the portion increases in size, the bar chart and line chart to the right filter for the category clicked on.</p></li></ul></p></li></ul>
+
+
+<br><br>
+
+<h1>User Guide</h1>
+Click on any portion of the donut to select that category. The bar chart and line chart will filter to only diplay the category selected. 
+<br> 
 
     </div>
     <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+
+<script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+
+    <script type="text/javascript">
     
+/*
+################ FORMATS ##################
+-------------------------------------------
+*/
+
+
+var   formatAsPercentage = d3.format("%"),
+    formatAsPercentage1Dec = d3.format(".1%"),
+    formatAsInteger = d3.format(","),
+    fsec = d3.time.format("%S s"),
+    fmin = d3.time.format("%M m"),
+    fhou = d3.time.format("%H h"),
+    fwee = d3.time.format("%a"),
+    fdat = d3.time.format("%d d"),
+    fmon = d3.time.format("%b")
+    ;
+
+/*
+############# PIE CHART ###################
+-------------------------------------------
+*/
+
+
+
+function dsPieChart(){
+
+  var dataset = [
+ {
+ category:"(0,1]",
+measure: 0.0014368 
+},
+{
+ category:"(1,2]",
+measure: 0.010441 
+},
+{
+ category:"(2,3]",
+measure: 0.027011 
+},
+{
+ category:"(3,4]",
+measure: 0.054981 
+},
+{
+ category:"(4,5]",
+measure: 0.11341 
+},
+{
+ category:"(5,6]",
+measure: 0.19732 
+},
+{
+ category:"(6,7]",
+measure: 0.27471 
+},
+{
+ category:"(7,8]",
+measure: 0.20211 
+},
+{
+ category:"(8,9]",
+measure: 0.087452 
+},
+{
+ category:"(9,10]",
+measure: 0.03113 
+} 
+]
+        ;
+
+  var   width = 400,
+       height = 400,
+       outerRadius = Math.min(width, height) / 2,
+       innerRadius = outerRadius * .999,   
+       // for animation
+       innerRadiusFinal = outerRadius * .5,
+       innerRadiusFinal3 = outerRadius* .45,
+       color = d3.scale.category20()    //builtin range of colors
+       ;
+      
+  var vis = d3.select("#pieChart")
+       .append("svg:svg")              //create the SVG element inside the <body>
+       .data([dataset])                   //associate our data with the document
+           .attr("width", width)           //set the width and height of our visualization (these will be attributes of the <svg> tag
+           .attr("height", height)
+          .append("svg:g")                //make a group to hold our pie chart
+           .attr("transform", "translate(" + outerRadius + "," + outerRadius + ")")    //move the center of the pie chart from 0, 0 to radius, radius
+        ;
+        
+   var arc = d3.svg.arc()              //this will create <path> elements for us using arc data
+          .outerRadius(outerRadius).innerRadius(innerRadius);
+   
+   // for animation
+   var arcFinal = d3.svg.arc().innerRadius(innerRadiusFinal).outerRadius(outerRadius);
+  var arcFinal3 = d3.svg.arc().innerRadius(innerRadiusFinal3).outerRadius(outerRadius);
+
+   var pie = d3.layout.pie()           //this will create arc data for us given a list of values
+        .value(function(d) { return d.measure; });    //we must tell it out to access the value of each element in our data array
+
+   var arcs = vis.selectAll("g.slice")     //this selects all <g> elements with class slice (there aren't any yet)
+        .data(pie)                          //associate the generated pie data (an array of arcs, each having startAngle, endAngle and value properties) 
+        .enter()                            //this will create <g> elements for every "extra" data element that should be associated with a selection. The result is creating a <g> for every object in the data array
+            .append("svg:g")                //create a group to hold each slice (we will have a <path> and a <text> element associated with each slice)
+               .attr("class", "slice")    //allow us to style things in the slices (like text)
+               .on("mouseover", mouseover)
+            .on("mouseout", mouseout)
+            .on("click", up)
+            ;
+            
+        arcs.append("svg:path")
+               .attr("fill", function(d, i) { return color(i); } ) //set the color for each slice to be chosen from the color function defined above
+               .attr("d", arc)     //this creates the actual SVG path using the associated data (pie) with the arc drawing function
+          .append("svg:title") //mouseover title showing the figures
+           .text(function(d) { return d.data.category + ": " + formatAsPercentage(d.data.measure); });      
+
+        d3.selectAll("g.slice").selectAll("path").transition()
+          .duration(750)
+          .delay(10)
+          .attr("d", arcFinal )
+          ;
+  
+    // Add a label to the larger arcs, translated to the arc centroid and rotated.
+    // source: http://bl.ocks.org/1305337#index.html
+    arcs.filter(function(d) { return d.endAngle - d.startAngle > .2; })
+        .append("svg:text")
+        .attr("dy", ".35em")
+        .attr("text-anchor", "middle")
+        .attr("transform", function(d) { return "translate(" + arcFinal.centroid(d) + ")rotate(" + angle(d) + ")"; })
+        //.text(function(d) { return formatAsPercentage(d.value); })
+        .text(function(d) { return d.data.category; })
+        ;
+     
+     // Computes the label angle of an arc, converting from radians to degrees.
+    function angle(d) {
+        var a = (d.startAngle + d.endAngle) * 90 / Math.PI - 90;
+        return a > 90 ? a - 180 : a;
+    }
+        
+    
+    // Pie chart title      
+    vis.append("svg:text")
+        .attr("dy", ".35em")
+        .attr("text-anchor", "middle")
+        .text("Ratings of All Movies")
+        .attr("class","title")
+        ;       
+
+
+    
+  function mouseover() {
+    d3.select(this).select("path").transition()
+        .duration(750)
+              //.attr("stroke","red")
+              //.attr("stroke-width", 1.5)
+              .attr("d", arcFinal3)
+              ;
+  }
+  
+  function mouseout() {
+    d3.select(this).select("path").transition()
+        .duration(750)
+              //.attr("stroke","blue")
+              //.attr("stroke-width", 1.5)
+              .attr("d", arcFinal)
+              ;
+  }
+  
+  function up(d, i) {
+  
+        /* update bar chart when user selects piece of the pie chart */
+        //updateBarChart(dataset[i].category);
+        updateBarChart(d.data.category, color(i));
+        updateLineChart(d.data.category, color(i));
+       
+  }
+}
+
+dsPieChart();
+
+/*
+############# BAR CHART ###################
+-------------------------------------------
+*/
+
+
+
+var datasetBarChart = [
+ {
+ group: "(0,1]",
+category:"Action",
+measure: 1 
+},
+{
+ group: "(0,1]",
+category:"Animation",
+measure: 0 
+},
+{
+ group: "(0,1]",
+category:"Comedy",
+measure: 7 
+},
+{
+ group: "(0,1]",
+category:"Drama",
+measure: 4 
+},
+{
+ group: "(0,1]",
+category:"Documentary",
+measure: 1 
+},
+{
+ group: "(0,1]",
+category:"Romance",
+measure: 1 
+},
+{
+ group: "(0,1]",
+category:"Short",
+measure: 4 
+},
+{
+ group: "(1,2]",
+category:"Action",
+measure: 12 
+},
+{
+ group: "(1,2]",
+category:"Animation",
+measure: 1 
+},
+{
+ group: "(1,2]",
+category:"Comedy",
+measure: 26 
+},
+{
+ group: "(1,2]",
+category:"Drama",
+measure: 27 
+},
+{
+ group: "(1,2]",
+category:"Documentary",
+measure: 8 
+},
+{
+ group: "(1,2]",
+category:"Romance",
+measure: 6 
+},
+{
+ group: "(1,2]",
+category:"Short",
+measure: 27 
+},
+{
+ group: "(2,3]",
+category:"Action",
+measure: 50 
+},
+{
+ group: "(2,3]",
+category:"Animation",
+measure: 6 
+},
+{
+ group: "(2,3]",
+category:"Comedy",
+measure: 63 
+},
+{
+ group: "(2,3]",
+category:"Drama",
+measure: 88 
+},
+{
+ group: "(2,3]",
+category:"Documentary",
+measure: 12 
+},
+{
+ group: "(2,3]",
+category:"Romance",
+measure: 22 
+},
+{
+ group: "(2,3]",
+category:"Short",
+measure: 37 
+},
+{
+ group: "(3,4]",
+category:"Action",
+measure: 89 
+},
+{
+ group: "(3,4]",
+category:"Animation",
+measure: 12 
+},
+{
+ group: "(3,4]",
+category:"Comedy",
+measure: 176 
+},
+{
+ group: "(3,4]",
+category:"Drama",
+measure: 151 
+},
+{
+ group: "(3,4]",
+category:"Documentary",
+measure: 29 
+},
+{
+ group: "(3,4]",
+category:"Romance",
+measure: 44 
+},
+{
+ group: "(3,4]",
+category:"Short",
+measure: 80 
+},
+{
+ group: "(4,5]",
+category:"Action",
+measure: 124 
+},
+{
+ group: "(4,5]",
+category:"Animation",
+measure: 36 
+},
+{
+ group: "(4,5]",
+category:"Comedy",
+measure: 399 
+},
+{
+ group: "(4,5]",
+category:"Drama",
+measure: 394 
+},
+{
+ group: "(4,5]",
+category:"Documentary",
+measure: 46 
+},
+{
+ group: "(4,5]",
+category:"Romance",
+measure: 116 
+},
+{
+ group: "(4,5]",
+category:"Short",
+measure: 180 
+},
+{
+ group: "(5,6]",
+category:"Action",
+measure: 206 
+},
+{
+ group: "(5,6]",
+category:"Animation",
+measure: 63 
+},
+{
+ group: "(5,6]",
+category:"Comedy",
+measure: 663 
+},
+{
+ group: "(5,6]",
+category:"Drama",
+measure: 861 
+},
+{
+ group: "(5,6]",
+category:"Documentary",
+measure: 107 
+},
+{
+ group: "(5,6]",
+category:"Romance",
+measure: 276 
+},
+{
+ group: "(5,6]",
+category:"Short",
+measure: 366 
+},
+{
+ group: "(6,7]",
+category:"Action",
+measure: 179 
+},
+{
+ group: "(6,7]",
+category:"Animation",
+measure: 123 
+},
+{
+ group: "(6,7]",
+category:"Comedy",
+measure: 839 
+},
+{
+ group: "(6,7]",
+category:"Drama",
+measure: 1404 
+},
+{
+ group: "(6,7]",
+category:"Documentary",
+measure: 278 
+},
+{
+ group: "(6,7]",
+category:"Romance",
+measure: 330 
+},
+{
+ group: "(6,7]",
+category:"Short",
+measure: 599 
+},
+{
+ group: "(7,8]",
+category:"Action",
+measure: 117 
+},
+{
+ group: "(7,8]",
+category:"Animation",
+measure: 111 
+},
+{
+ group: "(7,8]",
+category:"Comedy",
+measure: 493 
+},
+{
+ group: "(7,8]",
+category:"Drama",
+measure: 942 
+},
+{
+ group: "(7,8]",
+category:"Documentary",
+measure: 399 
+},
+{
+ group: "(7,8]",
+category:"Romance",
+measure: 190 
+},
+{
+ group: "(7,8]",
+category:"Short",
+measure: 562 
+},
+{
+ group: "(8,9]",
+category:"Action",
+measure: 38 
+},
+{
+ group: "(8,9]",
+category:"Animation",
+measure: 44 
+},
+{
+ group: "(8,9]",
+category:"Comedy",
+measure: 228 
+},
+{
+ group: "(8,9]",
+category:"Drama",
+measure: 303 
+},
+{
+ group: "(8,9]",
+category:"Documentary",
+measure: 186 
+},
+{
+ group: "(8,9]",
+category:"Romance",
+measure: 49 
+},
+{
+ group: "(8,9]",
+category:"Short",
+measure: 423 
+},
+{
+ group: "(9,10]",
+category:"Action",
+measure: 10 
+},
+{
+ group: "(9,10]",
+category:"Animation",
+measure: 6 
+},
+{
+ group: "(9,10]",
+category:"Comedy",
+measure: 79 
+},
+{
+ group: "(9,10]",
+category:"Drama",
+measure: 89 
+},
+{
+ group: "(9,10]",
+category:"Documentary",
+measure: 73 
+},
+{
+ group: "(9,10]",
+category:"Romance",
+measure: 13 
+},
+{
+ group: "(9,10]",
+category:"Short",
+measure: 207 
+},
+{
+ group: "All",
+category:"Action",
+measure: 826 
+},
+{
+ group: "All",
+category:"Animation",
+measure: 402 
+},
+{
+ group: "All",
+category:"Comedy",
+measure: 2973 
+},
+{
+ group: "All",
+category:"Drama",
+measure: 4263 
+},
+{
+ group: "All",
+category:"Documentary",
+measure: 1139 
+},
+{
+ group: "All",
+category:"Romance",
+measure: 1047 
+},
+{
+ group: "All",
+category:"Short",
+measure: 2485 
+} 
+]
+;
+
+// set initial group value
+var group = "All";
+
+function datasetBarChosen(group) {
+  var ds = [];
+  for (x in datasetBarChart) {
+     if(datasetBarChart[x].group==group){
+      ds.push(datasetBarChart[x]);
+     } 
+    }
+  return ds;
+}
+
+
+function dsBarChartBasics() {
+
+    var margin = {top: 30, right: 5, bottom: 20, left: 50},
+    width = 500 - margin.left - margin.right,
+     height = 250 - margin.top - margin.bottom,
+    colorBar = d3.scale.category20(),
+    barPadding = 1
+    ;
+    
+    return {
+      margin : margin, 
+      width : width, 
+      height : height, 
+      colorBar : colorBar, 
+      barPadding : barPadding
+    }     
+    ;
+}
+
+function dsBarChart() {
+
+  var firstDatasetBarChart = datasetBarChosen(group);           
+  
+  var basics = dsBarChartBasics();
+  
+  var margin = basics.margin,
+    width = basics.width,
+     height = basics.height,
+    colorBar = basics.colorBar,
+    barPadding = basics.barPadding
+    ;
+          
+  var   xScale = d3.scale.linear()
+            .domain([0, firstDatasetBarChart.length])
+            .range([0, width])
+            ;
+            
+  // Create linear y scale 
+  // Purpose: No matter what the data is, the bar should fit into the svg area; bars should not
+  // get higher than the svg height. Hence incoming data needs to be scaled to fit into the svg area.  
+  var yScale = d3.scale.linear()
+      // use the max funtion to derive end point of the domain (max value of the dataset)
+      // do not use the min value of the dataset as min of the domain as otherwise you will not see the first bar
+       .domain([0, d3.max(firstDatasetBarChart, function(d) { return d.measure; })])
+       // As coordinates are always defined from the top left corner, the y position of the bar
+       // is the svg height minus the data value. So you basically draw the bar starting from the top. 
+       // To have the y position calculated by the range function
+       .range([height, 0])
+       ;
+  
+  //Create SVG element
+  
+  var svg = d3.select("#barChart")
+      .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .attr("id","barChartPlot")
+        ;
+  
+  var plot = svg
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+        ;
+              
+  plot.selectAll("rect")
+       .data(firstDatasetBarChart)
+       .enter()
+       .append("rect")
+      .attr("x", function(d, i) {
+          return xScale(i);
+      })
+       .attr("width", width / firstDatasetBarChart.length - barPadding)   
+      .attr("y", function(d) {
+          return yScale(d.measure);
+      })  
+      .attr("height", function(d) {
+          return height-yScale(d.measure);
+      })
+      .attr("fill", "lightgrey")
+      ;
+  
+    
+  // Add y labels to plot 
+  
+  plot.selectAll("text")
+  .data(firstDatasetBarChart)
+  .enter()
+  .append("text")
+  .text(function(d) {
+      return formatAsInteger(d3.round(d.measure));
+  })
+  .attr("text-anchor", "middle")
+  // Set x position to the left edge of each bar plus half the bar width
+  .attr("x", function(d, i) {
+      return (i * (width / firstDatasetBarChart.length)) + ((width / firstDatasetBarChart.length - barPadding) / 2);
+  })
+  .attr("y", function(d) {
+      return yScale(d.measure) + 14;
+  })
+  .attr("class", "yAxis")
+  /* moved to CSS        
+  .attr("font-family", "sans-serif")
+  .attr("font-size", "11px")
+  .attr("fill", "white")
+  */
+  ;
+  
+  // Add x labels to chart  
+  
+  var xLabels = svg
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + (margin.top + height)  + ")")
+        ;
+  
+  xLabels.selectAll("text.xAxis")
+      .data(firstDatasetBarChart)
+      .enter()
+      .append("text")
+      .text(function(d) { return d.category;})
+      .attr("text-anchor", "middle")
+      // Set x position to the left edge of each bar plus half the bar width
+               .attr("x", function(d, i) {
+                  return (i * (width / firstDatasetBarChart.length)) + ((width / firstDatasetBarChart.length - barPadding) / 2);
+               })
+      .attr("y", 15)
+      .attr("class", "xAxis")
+      //.attr("style", "font-size: 12; font-family: Helvetica, sans-serif")
+      ;     
+   
+  // Title
+  
+  svg.append("text")
+    .attr("x", (width + margin.left + margin.right)/2)
+    .attr("y", 15)
+    .attr("class","title")        
+    .attr("text-anchor", "middle")
+    .text("Overall Genre Breakdown Years 2000-2004")
+    ;
+}
+
+dsBarChart();
+
+ /* ** UPDATE CHART ** */
+ 
+/* updates bar chart on request */
+
+function updateBarChart(group, colorChosen) {
+  
+    var currentDatasetBarChart = datasetBarChosen(group);
+    
+    var basics = dsBarChartBasics();
+  
+    var margin = basics.margin,
+      width = basics.width,
+       height = basics.height,
+      colorBar = basics.colorBar,
+      barPadding = basics.barPadding
+      ;
+    
+    var   xScale = d3.scale.linear()
+      .domain([0, currentDatasetBarChart.length])
+      .range([0, width])
+      ;
+    
+      
+    var yScale = d3.scale.linear()
+        .domain([0, d3.max(currentDatasetBarChart, function(d) { return d.measure; })])
+        .range([height,0])
+        ;
+        
+     var svg = d3.select("#barChart svg");
+        
+     var plot = d3.select("#barChartPlot")
+      .datum(currentDatasetBarChart)
+       ;
+  
+        /* Note that here we only have to select the elements - no more appending! */
+      plot.selectAll("rect")
+        .data(currentDatasetBarChart)
+        .transition()
+      .duration(750)
+      .attr("x", function(d, i) {
+          return xScale(i);
+      })
+       .attr("width", width / currentDatasetBarChart.length - barPadding)   
+      .attr("y", function(d) {
+          return yScale(d.measure);
+      })  
+      .attr("height", function(d) {
+          return height-yScale(d.measure);
+      })
+      .attr("fill", colorChosen)
+      ;
+    
+    plot.selectAll("text.yAxis") // target the text element(s) which has a yAxis class defined
+      .data(currentDatasetBarChart)
+      .transition()
+      .duration(750)
+       .attr("text-anchor", "middle")
+       .attr("x", function(d, i) {
+          return (i * (width / currentDatasetBarChart.length)) + ((width / currentDatasetBarChart.length - barPadding) / 2);
+       })
+       .attr("y", function(d) {
+          return yScale(d.measure) + 14;
+       })
+       .text(function(d) {
+        return formatAsInteger(d3.round(d.measure));
+       })
+       .attr("class", "yAxis")           
+    ;
+    
+
+    svg.selectAll("text.title") // target the text element(s) which has a title class defined
+      .attr("x", (width + margin.left + margin.right)/2)
+      .attr("y", 15)
+      .attr("class","title")        
+      .attr("text-anchor", "middle")
+      .text("Rating Group Genre Breakdown Over Years 2000-2004")
+    ;
+}
+
+
+/*
+############# LINE CHART ##################
+-------------------------------------------
+*/
+
+var datasetLineChart = [
+ {
+ group: "All",
+category:2000,
+measure: 2048 
+},
+{
+ group: "All",
+category:2001,
+measure: 2121 
+},
+{
+ group: "All",
+category:2002,
+measure: 2168 
+},
+{
+ group: "All",
+category:2003,
+measure: 2158 
+},
+{
+ group: "All",
+category:2004,
+measure: 1945 
+},
+{
+ group: "(0,1]",
+category:2000,
+measure: 3 
+},
+{
+ group: "(0,1]",
+category:2002,
+measure: 2 
+},
+{
+ group: "(0,1]",
+category:2003,
+measure: 3 
+},
+{
+ group: "(0,1]",
+category:2004,
+measure: 7 
+},
+{
+ group: "(1,2]",
+category:2000,
+measure: 28 
+},
+{
+ group: "(1,2]",
+category:2001,
+measure: 20 
+},
+{
+ group: "(1,2]",
+category:2002,
+measure: 14 
+},
+{
+ group: "(1,2]",
+category:2003,
+measure: 27 
+},
+{
+ group: "(1,2]",
+category:2004,
+measure: 20 
+},
+{
+ group: "(2,3]",
+category:2000,
+measure: 72 
+},
+{
+ group: "(2,3]",
+category:2001,
+measure: 64 
+},
+{
+ group: "(2,3]",
+category:2002,
+measure: 49 
+},
+{
+ group: "(2,3]",
+category:2003,
+measure: 59 
+},
+{
+ group: "(2,3]",
+category:2004,
+measure: 38 
+},
+{
+ group: "(3,4]",
+category:2000,
+measure: 141 
+},
+{
+ group: "(3,4]",
+category:2001,
+measure: 132 
+},
+{
+ group: "(3,4]",
+category:2002,
+measure: 124 
+},
+{
+ group: "(3,4]",
+category:2003,
+measure: 88 
+},
+{
+ group: "(3,4]",
+category:2004,
+measure: 89 
+},
+{
+ group: "(4,5]",
+category:2000,
+measure: 303 
+},
+{
+ group: "(4,5]",
+category:2001,
+measure: 264 
+},
+{
+ group: "(4,5]",
+category:2002,
+measure: 218 
+},
+{
+ group: "(4,5]",
+category:2003,
+measure: 216 
+},
+{
+ group: "(4,5]",
+category:2004,
+measure: 183 
+},
+{
+ group: "(5,6]",
+category:2000,
+measure: 437 
+},
+{
+ group: "(5,6]",
+category:2001,
+measure: 427 
+},
+{
+ group: "(5,6]",
+category:2002,
+measure: 454 
+},
+{
+ group: "(5,6]",
+category:2003,
+measure: 447 
+},
+{
+ group: "(5,6]",
+category:2004,
+measure: 295 
+},
+{
+ group: "(6,7]",
+category:2000,
+measure: 562 
+},
+{
+ group: "(6,7]",
+category:2001,
+measure: 641 
+},
+{
+ group: "(6,7]",
+category:2002,
+measure: 616 
+},
+{
+ group: "(6,7]",
+category:2003,
+measure: 569 
+},
+{
+ group: "(6,7]",
+category:2004,
+measure: 480 
+},
+{
+ group: "(7,8]",
+category:2000,
+measure: 360 
+},
+{
+ group: "(7,8]",
+category:2001,
+measure: 396 
+},
+{
+ group: "(7,8]",
+category:2002,
+measure: 462 
+},
+{
+ group: "(7,8]",
+category:2003,
+measure: 479 
+},
+{
+ group: "(7,8]",
+category:2004,
+measure: 413 
+},
+{
+ group: "(8,9]",
+category:2000,
+measure: 118 
+},
+{
+ group: "(8,9]",
+category:2001,
+measure: 148 
+},
+{
+ group: "(8,9]",
+category:2002,
+measure: 178 
+},
+{
+ group: "(8,9]",
+category:2003,
+measure: 197 
+},
+{
+ group: "(8,9]",
+category:2004,
+measure: 272 
+},
+{
+ group: "(9,10]",
+category:2000,
+measure: 24 
+},
+{
+ group: "(9,10]",
+category:2001,
+measure: 29 
+},
+{
+ group: "(9,10]",
+category:2002,
+measure: 51 
+},
+{
+ group: "(9,10]",
+category:2003,
+measure: 73 
+},
+{
+ group: "(9,10]",
+category:2004,
+measure: 148 
+} 
+]
+;
+
+// set initial category value
+var group = "All";
+
+function datasetLineChartChosen(group) {
+  var ds = [];
+  for (x in datasetLineChart) {
+     if(datasetLineChart[x].group==group){
+      ds.push(datasetLineChart[x]);
+     } 
+    }
+  return ds;
+}
+
+function dsLineChartBasics() {
+
+  var margin = {top: 20, right: 10, bottom: 0, left: 50},
+      width = 500 - margin.left - margin.right,
+      height = 150 - margin.top - margin.bottom
+      ;
+    
+    return {
+      margin : margin, 
+      width : width, 
+      height : height
+    }     
+    ;
+}
+
+
+function dsLineChart() {
+
+  var firstDatasetLineChart = datasetLineChartChosen(group);    
+  
+  var basics = dsLineChartBasics();
+  
+  var margin = basics.margin,
+    width = basics.width,
+     height = basics.height
+    ;
+
+  var xScale = d3.scale.linear()
+      .domain([0, firstDatasetLineChart.length-1])
+      .range([0, width])
+      ;
+
+  var yScale = d3.scale.linear()
+      .domain([0, d3.max(firstDatasetLineChart, function(d) { return d.measure; })])
+      .range([height, 0])
+      ;
+  
+  var line = d3.svg.line()
+      //.x(function(d) { return xScale(d.category); })
+      .x(function(d, i) { return xScale(i); })
+      .y(function(d) { return yScale(d.measure); })
+      ;
+  
+  var svg = d3.select("#lineChart").append("svg")
+      .datum(firstDatasetLineChart)
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      // create group and move it so that margins are respected (space for axis and title)
+      
+  var plot = svg
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+      .attr("id", "lineChartPlot")
+      ;
+
+    /* descriptive titles as part of plot -- start */
+  var dsLength=firstDatasetLineChart.length;
+
+  plot.append("text")
+    //.text(firstDatasetLineChart[dsLength-1].measure)
+    .attr("id","lineChartTitle2")
+    .attr("x",width/2)
+    .attr("y",height/2) 
+    ;
+  /* descriptive titles -- end */
+      
+  plot.append("path")
+      .attr("class", "line")
+      .attr("d", line)  
+      // add color
+    .attr("stroke", "lightgrey")
+      ;
+    
+  plot.selectAll(".dot")
+      .data(firstDatasetLineChart)
+       .enter().append("circle")
+      .attr("class", "dot")
+      //.attr("stroke", function (d) { return d.measure==datasetMeasureMin ? "red" : (d.measure==datasetMeasureMax ? "green" : "steelblue") } )
+      .attr("fill",  "white" )
+      //.attr("stroke-width", function (d) { return d.measure==datasetMeasureMin || d.measure==datasetMeasureMax ? "3px" : "1.5px"} )
+      .attr("cx", line.x())
+      .attr("cy", line.y())
+      .attr("r", 3.5)
+      .attr("stroke", "lightgrey")
+      .append("title")
+      .text(function(d) { return d.category + ": " + formatAsInteger(d.measure); })
+      ;
+
+  svg.append("text")
+    .text("Number of Movies Over Time")
+    .attr("id","lineChartTitle1") 
+    .attr("x",margin.left + ((width + margin.right)/2))
+    .attr("y", 10)
+    ;
+
+}
+
+dsLineChart();
+
+
+ /* ** UPDATE CHART ** */
+ 
+/* updates bar chart on request */
+function updateLineChart(group, colorChosen) {
+
+  var currentDatasetLineChart = datasetLineChartChosen(group);   
+
+  var basics = dsLineChartBasics();
+  
+  var margin = basics.margin,
+    width = basics.width,
+     height = basics.height
+    ;
+
+  var xScale = d3.scale.linear()
+      .domain([0, currentDatasetLineChart.length-1])
+      .range([0, width])
+      ;
+
+  var yScale = d3.scale.linear()
+      .domain([0, d3.max(currentDatasetLineChart, function(d) { return d.measure; })])
+      .range([height, 0])
+      ;
+  
+  var line = d3.svg.line()
+    .x(function(d, i) { return xScale(i); })
+    .y(function(d) { return yScale(d.measure); })
+    ;
+
+   var plot = d3.select("#lineChartPlot")
+    .datum(currentDatasetLineChart)
+     ;
+     
+  /* descriptive titles as part of plot -- start */
+  var dsLength=currentDatasetLineChart.length;
+  
+  plot.select("text")
+    .text(currentDatasetLineChart[dsLength-1].group)
+    ;
+  /* descriptive titles -- end */
+     
+  plot
+  .select("path")
+    .transition()
+    .duration(750)          
+     .attr("class", "line")
+     .attr("d", line) 
+     // add color
+    .attr("stroke", colorChosen)
+     ;
+     
+  var path = plot
+    .selectAll(".dot")
+     .data(currentDatasetLineChart)
+     .transition()
+    .duration(750)
+     .attr("class", "dot")
+     .attr("fill", "white" )
+     .attr("cx", line.x())
+     .attr("cy", line.y())
+     .attr("r", 3.5)
+     // add color
+    .attr("stroke", colorChosen)
+     ;
+     
+     path
+     .selectAll("title")
+     //.text(function(d) { return d.category + ": " + formatAsInteger(d.measure); })   
+     ;  
+
+}
+
+    </script>
+
+
+
+
+
   </body>
 </html>
