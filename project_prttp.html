@@ -1,0 +1,362 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Project Dataset</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  <meta charset="UTF-8">
+<meta content="utf-8" http-equiv="encoding">
+<style>
+
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.box {
+  font: 10px sans-serif;
+}
+
+.box line,
+.box rect,
+.box circle {
+  fill: steelblue;
+  stroke: #000;
+  stroke-width: 1px;
+}
+
+.box .center {
+  stroke-dasharray: 3,3;
+}
+
+.box .outlier {
+  fill: none;
+  stroke: #000;
+}
+
+.axis {
+  font: 12px sans-serif;
+}
+ 
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+ 
+.x.axis path { 
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+</style>
+
+  <body>
+
+<h1 class="page-header">HW4 <small>Movies Dashboard Visualization</small></h1>
+
+
+<h3><a href="https://github.com/lubagloukhov">Luba Gloukhova</a> | <a href="mailto:lubagloukhov@gmail.com">lubagloukhov@gmail.com</a> | <a href="https://github.com/lubagloukhov/spring-2015-msan622/blob/gh-pages/hw4.html">HW4 GitHub</a>
+<br></h3>
+
+<h1>Dataset Summary</h1>
+
+The dataset was generated as part of research by Economist Fisman and Psychologist Iyengar at Columbia Business School. The two conducted a randomized Speed Dating experiment in an aim to directly observe individual decisions. 
+<p>
+The dataset is composed of over 8,000 observations of answers to over 20 survey questions about how people rate themselves and how they rate others on multiple dimensions. 
+<p>
+Link to the <a href="project_data.html">project dataset page</a>.
+
+
+
+<br><br>
+<h1>Sketch Summary</h1>
+This visualization seeks to depict the distribution of interest in various activities across levels of attractiveness and genders. A separate box and whisker plot is plotted for the following variables: sports, tvsports, excersice, dining, museums, hiking, clubbing, tv, theater, movies, concerts, music, shopping, yoga. Each variable pertains to the question "How interested are you in the following activities, on a scale of 1-10?". 
+<p>
+The box and whisker plots ultimately will be faceted (or filtered) by the gender variable. I have not figured ou thow to implement this. Further, this visualization will be sorted/filetred to only show the distribution for a given attractiveness range ([-0.5,0.5,],...,[9.5,10.5]) ultimately chosen by clicking/interacting with another visualization (Visualization 1).
+<p>
+The initial implemntation of this visualization depicts a subset of the dataset pertaining to males who were rated between 5.5 and 6.5 on a scale of 1-10 for attractiveness. The average value of attractiveness across all observatins for males is 6.19.
+<p>
+Link to the <a href="project_sketch.html">project sketch page</a>.
+
+<br><br>
+<h1>Visualization Prototype</h1>
+
+
+<div id="prttp"></div>
+
+
+
+
+<h1>Data Preprocessing</h1>
+
+I preprocessed the data in R.
+
+<p>
+
+<div style="overflow:auto;"><div class="geshifilter"><pre class="r geshifilter-R" style="font-family:monospace;"><a href="http://inside-r.org/r-doc/stats/sd"><span style="color: #003399; font-weight: bold;">sd</span></a> <span style="">&lt;-</span> <a href="http://inside-r.org/r-doc/utils/read.csv"><span style="color: #003399; font-weight: bold;">read.csv</span></a><span style="color: #009900;">&#40;</span><span style="color: #0000ff;">&quot;SpeedDating.csv&quot;</span><span style="color: #009900;">&#41;</span>
+activities <span style="">&lt;-</span><a href="http://inside-r.org/r-doc/base/c"><span style="color: #003399; font-weight: bold;">c</span></a><span style="color: #009900;">&#40;</span><span style="color: #0000ff;">&quot;sports&quot;</span><span style="color: #339933;">,</span> <span style="color: #0000ff;">&quot;tvsports&quot;</span><span style="color: #339933;">,</span> <span style="color: #0000ff;">&quot;exercise&quot;</span><span style="color: #339933;">,</span> <span style="color: #0000ff;">&quot;dining&quot;</span><span style="color: #339933;">,</span> <span style="color: #0000ff;">&quot;museums&quot;</span><span style="color: #339933;">,</span> <span style="color: #0000ff;">&quot;hiking&quot;</span><span style="color: #339933;">,</span> <span style="color: #0000ff;">&quot;clubbing&quot;</span><span style="color: #339933;">,</span> <span style="color: #0000ff;">&quot;tv&quot;</span><span style="color: #339933;">,</span> <span style="color: #0000ff;">&quot;theater&quot;</span><span style="color: #339933;">,</span> <span style="color: #0000ff;">&quot;movies&quot;</span><span style="color: #339933;">,</span> <span style="color: #0000ff;">&quot;concerts&quot;</span><span style="color: #339933;">,</span> <span style="color: #0000ff;">&quot;music&quot;</span><span style="color: #339933;">,</span> <span style="color: #0000ff;">&quot;shopping&quot;</span><span style="color: #339933;">,</span> <span style="color: #0000ff;">&quot;yoga&quot;</span><span style="color: #009900;">&#41;</span>
+<a href="http://inside-r.org/r-doc/stats/sd"><span style="color: #003399; font-weight: bold;">sd</span></a><span style="">$</span>attr_o_cat <span style="">&lt;-</span> <a href="http://inside-r.org/r-doc/base/cut"><span style="color: #003399; font-weight: bold;">cut</span></a><span style="color: #009900;">&#40;</span><a href="http://inside-r.org/r-doc/stats/sd"><span style="color: #003399; font-weight: bold;">sd</span></a><span style="">$</span>attr_o<span style="color: #339933;">,</span> breaks=<a href="http://inside-r.org/r-doc/base/seq"><span style="color: #003399; font-weight: bold;">seq</span></a><span style="color: #009900;">&#40;</span><span style="">-</span><span style="color: #cc66cc;">0.5</span><span style="color: #339933;">,</span><span style="color: #cc66cc;">10.5</span><span style="color: #009900;">&#41;</span><span style="color: #009900;">&#41;</span>
+sd_bw_m_prttp <span style="">&lt;-</span> <a href="http://inside-r.org/r-doc/base/subset"><span style="color: #003399; font-weight: bold;">subset</span></a><span style="color: #009900;">&#40;</span><a href="http://inside-r.org/r-doc/stats/sd"><span style="color: #003399; font-weight: bold;">sd</span></a><span style="color: #339933;">,</span> attr_o_cat<span style="">==</span><span style="color: #0000ff;">&quot;(5.5,6.5]&quot;</span> <span style="">&amp;</span> gender<span style="">==</span><span style="color: #cc66cc;">1</span><span style="color: #339933;">,</span>select=activities<span style="color: #009900;">&#41;</span>
+sd_bw_m_prttp <span style="">&lt;-</span> sd_bw_m_prttp<span style="color: #009900;">&#91;</span><a href="http://inside-r.org/r-doc/stats/complete.cases"><span style="color: #003399; font-weight: bold;">complete.cases</span></a><span style="color: #009900;">&#40;</span>sd_bw_m_prttp<span style="color: #009900;">&#41;</span><span style="color: #339933;">,</span><span style="color: #009900;">&#93;</span>
+<a href="http://inside-r.org/r-doc/utils/write.csv"><span style="color: #003399; font-weight: bold;">write.csv</span></a><span style="color: #009900;">&#40;</span>sd_bw_m_prttp<span style="color: #339933;">,</span> <span style="color: #0000ff;">&quot;sd_bw_m_prttp.csv&quot;</span><span style="color: #339933;">,</span> <a href="http://inside-r.org/r-doc/base/row.names"><span style="color: #003399; font-weight: bold;">row.names</span></a>=F<span style="color: #009900;">&#41;</span></pre></div></div>
+
+<br><br>
+
+</div>
+<!--[if !IE]><script>fixScale(document);</script><![endif]-->
+
+<script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="box.js"></script>
+
+<script>
+var labels = true; // show the text labels beside individual boxplots?
+
+var margin = {top: 30, right: 50, bottom: 70, left: 50};
+var  width = 800 - margin.left - margin.right;
+var height = 400 - margin.top - margin.bottom;
+  
+var min = Infinity,
+    max = -Infinity;
+  
+// parse in the data  
+d3.csv("sd_bw_m_prttp.csv", function(error, csv) {
+  // using an array of arrays with
+  // data[n][2] 
+  // where n = number of columns in the csv file 
+  // data[i][0] = name of the ith column
+  // data[i][1] = array of values of ith column
+
+  var data = [];
+  data[0] = [];
+  data[1] = [];
+  data[2] = [];
+  data[3] = [];
+  data[4] = [];
+  data[5] = [];
+  data[6] = [];
+  data[7] = [];
+  data[8] = [];
+  data[9] = [];
+  data[10] = [];
+  data[11] = [];
+  data[12] = [];
+  data[13] = [];
+  // add more rows if your csv file has more columns
+
+  // add here the header of the csv file
+  // data[0][0] = "Q1";
+  // data[1][0] = "Q2";
+  // data[2][0] = "Q3";
+  // data[3][0] = "Q4"; 
+  data[0][0] = "sports";
+  data[1][0] = "tvsports";
+  data[2][0] = "exercise";
+  data[3][0] = "dining";
+  data[4][0] = "museums";
+  data[5][0] = "hiking";
+  data[6][0] = "clubbing";
+  data[7][0] = "tv";
+  data[8][0] = "theater";
+  data[9][0] = "movies";
+  data[10][0] = "concerts";
+  data[11][0] = "music";
+  data[12][0] = "shopping";
+  data[13][0] = "yoga";
+  // add more rows if your csv file has more columns
+
+  data[0][1] = [];
+  data[1][1] = [];
+  data[2][1] = [];
+  data[3][1] = [];
+  data[4][1] = [];
+  data[5][1] = [];
+  data[6][1] = [];
+  data[7][1] = [];
+  data[8][1] = [];
+  data[9][1] = [];
+  data[10][1] = [];
+  data[11][1] = [];
+  data[12][1] = [];
+  data[13][1] = [];
+  
+  csv.forEach(function(x) {
+    var v1 = Math.floor(x.sports),
+      v2 = Math.floor(x.tvsports),
+      v3 = Math.floor(x.exercise),
+      v4 = Math.floor(x.dining),
+      v5 = Math.floor(x.museums),
+      v6 = Math.floor(x.hiking),
+      v7 = Math.floor(x.clubbing),
+      v8 = Math.floor(x.tv),
+      v9 = Math.floor(x.theater),
+      v10 = Math.floor(x.movies)
+      v11 = Math.floor(x.concerts),
+      v12 = Math.floor(x.music),
+      v13 = Math.floor(x.shopping),
+      v14 = Math.floor(x.yoga);
+      // add more variables if your csv file has more columns
+      
+    var rowMax = Math.max(v1, 
+      Math.max(v2, 
+        Math.max(v3,
+          Math.max(v4,
+            Math.max(v5,
+              Math.max(v6,
+                Math.max(v7,
+                  Math.max(v8,
+                    Math.max(v9,
+                      Math.max(v10,
+                        Math.max(v11,
+                          Math.max(v12,
+                            Math.max(v13,v14)))))))))))));    
+    var rowMin = Math.min(v1, 
+      Math.min(v2, 
+        Math.min(v3,
+          Math.min(v4,
+            Math.min(v5,
+              Math.min(v6,
+                Math.min(v7,
+                  Math.min(v8,
+                    Math.min(v9,
+                      Math.min(v10,
+                        Math.min(v11,
+                          Math.min(v12,
+                            Math.min(v13,v14)))))))))))));
+
+    // var rowMin = Math.min(v1, Math.min(v2, Math.min(v3,v4)));
+
+    data[0][1].push(v1);
+    data[1][1].push(v2);
+    data[2][1].push(v3);
+    data[3][1].push(v4);
+    data[4][1].push(v5);
+    data[5][1].push(v6);
+    data[6][1].push(v7);
+    data[7][1].push(v8);
+    data[8][1].push(v9);
+    data[9][1].push(v10);
+    data[10][1].push(v11);
+    data[11][1].push(v12);
+    data[12][1].push(v13);
+    data[13][1].push(v14);
+     // add more rows if your csv file has more columns
+     
+    if (rowMax > max) max = rowMax;
+    if (rowMin < min) min = rowMin; 
+  });
+  
+  var chart = d3.box()
+    .whiskers(iqr(1.5))
+    .height(height) 
+    .domain([min, max])
+    .showLabels(labels);
+
+  
+
+      var svg = d3.select("#prttp").append("svg:svg")
+  // var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .attr("class", "box")    
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+  
+  // the x-axis
+  var x = d3.scale.ordinal()     
+    .domain( data.map(function(d) { console.log(d); return d[0] } ) )     
+    .rangeRoundBands([0 , width], 0.7, 0.3);    
+
+  var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+  // the y-axis
+  var y = d3.scale.linear()
+    .domain([min, max])
+    .range([height + margin.top, 0 + margin.top]);
+  
+  var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left");
+
+  // draw the boxplots  
+  svg.selectAll(".box")    
+      .data(data)
+    .enter().append("g")
+    .attr("transform", function(d) { return "translate(" +  x(d[0])  + "," + margin.top + ")"; } )
+      .call(chart.width(x.rangeBand())); 
+  
+        
+  // add a title
+  svg.append("text")
+        .attr("x", (width / 2))             
+        .attr("y", 0 + (margin.top / 2))
+        .attr("text-anchor", "middle")  
+        .style("font-size", "18px") 
+        //.style("text-decoration", "underline")  
+        .text("Personal Interest Rating of Various Activities");
+ 
+   // draw y axis
+  svg.append("g")
+        .attr("class", "y axis")
+        .call(yAxis)
+    .append("text") // and text1
+      // .attr("transform", "rotate(-90)")
+      .attr("x", 0)
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .style("font-size", "16px") 
+      .text("Rating");    
+  
+  // draw x axis  
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + (height  + margin.top + 10) + ")")
+      .call(xAxis)
+    .append("text")             // text label for the x axis
+        .attr("x", 0)
+        .attr("y",  10 )
+    .attr("dy", ".71em")
+        .style("text-anchor", "end")
+    .style("font-size", "16px") 
+        .text("Activity"); 
+});
+
+// Returns a function to compute the interquartile range.
+function iqr(k) {
+  return function(d, i) {
+    var q1 = d.quartiles[0],
+        q3 = d.quartiles[2],
+        iqr = (q3 - q1) * k,
+        i = -1,
+        j = d.length;
+    while (d[++i] < q1 - iqr);
+    while (d[--j] > q3 + iqr);
+    return [i, j];
+  };
+}
+
+</script>
+
+
+
+
+
+  </body>
+</html>
