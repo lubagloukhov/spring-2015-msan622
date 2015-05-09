@@ -2,102 +2,81 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Information Visualization by Luba Gloukhova</title>
+    <title>HW5 Earthquakes Visualization</title>
 
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <!--[if lt IE 8]>
-    <link rel="stylesheet" href="stylesheets/ie.css">
-    <![endif]-->
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <!-- load D3 and TopoJSON //-->
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script src="http://d3js.org/topojson.v1.min.js"></script>
 
     <!-- load custom CSS and JavaScript //-->
-    <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
-  </head>
 
-  <meta charset="UTF-8">
-<meta content="utf-8" http-equiv="encoding">
-<style>
+    <style type="text/css">
+        body {
+            padding-top: 50px;
+            padding-bottom: 20px;
+        }
+        =body {
+            /*background-color: whitesmoke;*/
+            padding: 0px;
+        }
 
+        svg {
+            background-color: white;
+            margin: 0px;
+            float: left;
+        }
 
-body {
-    /*background-color: whitesmoke;*/
-    margin: 8px 10px;
-    padding: 0px;
-}
+        #block {
+            max-width: 950px;
+        }
 
-svg {
-    background-color: white;
-    margin: 0px;
-    float: left;
-}
+        #log {
+            color: dimgray;
 
-#block {
-    max-width: 950px;
-}
+            font-size: 10px;
+            font-style: italic;
+            text-align: center;
 
-#log {
-    color: dimgray;
+            margin: 0px;
+            padding: 0px;
+        }
 
-    font-size: 10px;
-    font-style: italic;
-    text-align: center;
+        .country {
+            fill: gainsboro;
+        }
 
-    margin: 0px;
-    padding: 0px;
-}
+        .state {
+            fill: none;
+        }
 
-.country {
-    fill: gainsboro;
-}
+        
+        .symbol {
+            /*fill: royalblue;*/
+            fill-opacity: 0.4;
 
-.state {
-    fill: none;
-}
+            stroke: "red";
+            stroke-width: 1px;
+            stroke-opacity: 1.0;
+        }
+=
 
-/*
- * Setting "opacity" can affect both
- * fill and stroke. We want to set
- * both of those separately.
- */
+        circle.highlight {
+            stroke: #4CD6C9;
+            stroke-width: 2px;
+        }
 
-.symbol {
-    fill: royalblue;
-    fill-opacity: 0.25;
+        path.highlight {
+            fill: whitesmoke;
 
-    stroke: royalblue;
-    stroke-width: 1px;
-    stroke-opacity: 1.0;
-}
+            stroke: tomato;
+            stroke-width: 1px;
+        }
+    </style>
 
-/*
- * We can specify how to highlight based
- * on the type of underlying object.
- */
+ </head>
 
-circle.highlight {
-    stroke: orangered;
-    stroke-width: 2px;
-}
-
-path.highlight {
-    fill: whitesmoke;
-
-    stroke: tomato;
-    stroke-width: 1px;
-}
-
-
-</style>
-
-
-  <body>
+ <body>
 
 <h1 class="page-header">HW5 <small>Earthquakes Visualization</small></h1>
 
@@ -115,9 +94,12 @@ path.highlight {
 
 <h1>Functionality Overview</h1>
 
-I have implemented C-level functionality. <br>
+I have implemented B and C-level functionality. <br>
 <h3>Basic (C-level) Functionality</h3>
     <ul><li><p>Downloaded the example Proportional Symbol Map demo. Modified the code to use the world-50.json file instead of the us.json TopoJSON file. And, modified the code to use the earthquake CSV file as the data file. </p></li></ul>
+
+<h3>Moderate (B-level) Functionality</h3>
+    <ul><li><p>Modified the code to color the circles by depth as well.</p></li></ul>
 
 
 <h1>User Guide</h1>
@@ -132,10 +114,7 @@ Look at the map.
  <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
-/*
- * For sample TopoJSON files, go to:
- * https://gist.github.com/mbostock/4090846
- */
+
 var base = "https://gist.githubusercontent.com/mbostock/4090846/raw/";
 var url = {
     world: base +"world-50m.json",
@@ -144,40 +123,27 @@ var url = {
     // states:  base + "us-state-names.tsv",
     // precip:  "usprecip.json" // relative URL
 };
-
 // Uses reusable chart model
 // See http://bost.ocks.org/mike/chart/
 var chart = symbolMap();
-
 // Update how we access data (need the precip property)
 chart = chart.value(function(d) { return d.mag; });
-
 // Nested calls to trigger drawing in proper order
 d3.json(url.world, function(mapError, mapJSON) {
     if (processError(mapError)) return;
-
     // update map data
     chart = chart.map(mapJSON);
-
     // Wait until the map is drawn before loading
     // and drawing the data values
     d3.csv(url.earthquakes, function(dataError, dataJSON) {
         if (processError(dataError)) return;
-
         chart = chart.values(dataJSON);
         chart("map");
     });
 });
 
-// Load state lookup information
-// Possible some lookups will fail until this loads
-// d3.tsv(url.states, parseStateName, function(error, data) {
-//         if (processError(error)) return;
-//         chart = chart.lookup(data);
-//     }
-// );
-
 </script>
 
 </body>
+</html>
 </html>

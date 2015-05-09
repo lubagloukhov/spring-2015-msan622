@@ -1,7 +1,11 @@
+
 /*
  * If there is an error, insert an error message in the HTML
  * and log the error to the console.
  */
+
+
+
 function processError(error) {
     if (error) {
         // Use the "statusText" of the error if possible
@@ -26,19 +30,22 @@ function processError(error) {
  * Parses us-state-names.tsv into components.
  * Used by d3.tsv() function.
 */
-// function parseStateName(row) {
-//     return {
-//         id: +row.id,
-//         name: row.name.trim(),
-//         code: row.code.trim().toUpperCase()
-//     };
-// }
+function parseStateName(row) {
+    return {
+        id: +row.id,
+        name: row.name.trim(),
+        code: row.code.trim().toUpperCase()
+    };
+}
 
 function symbolMap() {
 
     var lookup = {};
 
+
     var projection = d3.geo.mercator();
+
+    var color = d3.scale.threshold().domain([0, 75, 150, 300]).range(["#4500e5","#6d00c6","#960047","#a0009f","#bf0088"]);
 
     var radius = d3.scale.sqrt().range([5, 15]);
 
@@ -64,14 +71,15 @@ function symbolMap() {
 
         // update project scale
         // (this may need to be customized for different projections)
-        var width = 960,
-            height = 960;
+        projection = projection.scale(bbox.width/2/Math.PI);
 
-        var projection = d3.geo.mercator()
-            .scale((width + 1) / 2 / Math.PI)
-            .translate([width / 2, height / 2])
-            .precision(.1);
+        // update projection translation
+        projection = projection.translate([
+            bbox.width / 2,
+            bbox.height / 2
+        ]);
 
+        projection = projection.precision(.1)
         // set path generator based on projection
         var path = d3.geo.path().projection(projection);
 
@@ -86,7 +94,7 @@ function symbolMap() {
         var symbols = svg.append("g").attr("id", "dots");
 
         // show that only 1 feature for land
-        // console.log(topojson.feature(map, map.objects.land));
+        console.log(topojson.feature(map, map.objects.land));
 
         // show that we have an array of features for states
         // console.log(topojson.feature(map, map.objects.states));
@@ -101,20 +109,22 @@ function symbolMap() {
 
         // draw states (invisible for now)
         // may need to adjust to draw countries instead?
-        // country.selectAll("path")
-        //     .data(topojson.feature(map, map.objects.land).features)
+        // states.selectAll("path")
+        //     .data(topojson.feature(map, map.objects.states).features)
         //     .enter()
         //     .append("path")
         //     .attr("d", path)
-            // set the ID so we can select it later
-            // .attr("id", function(d) { return "state" + d.id; })
-            // .classed({"state": true});
+        //     // set the ID so we can select it later
+        //     .attr("id", function(d) { return "state" + d.id; })
+        //     .classed({"state": true});
 
         // draw symbols
         symbols.selectAll("circle")
             .data(values)
             .enter()
             .append("circle")
+            .attr("fill", function(d){return color(d.depth);})
+            .attr("fill-opacity", "0.75")
             .attr("r", function(d, i) {
                 return radius(value(d));
             })
@@ -126,9 +136,10 @@ function symbolMap() {
             .attr("cy", function(d, i) {
                 return projection([d.longitude, d.latitude])[1];
             })
+            
             .classed({"symbol": true})
-            // .on("mouseover", showHighlight)
-            // .on("mouseout", hideHighlight);
+            .on("mouseover", showHighlight)
+            .on("mouseout", hideHighlight);
     }
 
     /*
@@ -251,25 +262,25 @@ function symbolMap() {
     }
 
     // called on mouseover
-    // function showHighlight(d) {
-    //     // highlight symbol
-    //     d3.select(this).classed({
-    //         "highlight": true,
-    //         "symbol": true
-    //     });
+    function showHighlight(d) {
+        // highlight symbol
+        d3.select(this).classed({
+            "highlight": true,
+            "symbol": true
+        });
 
-    //     // highlight state associated with symbol
-    //     d3.select("g#states")
-    //         .select("path#state" + lookup[d.state])
-    //         .classed({
-    //             "highlight": true,
-    //             "state": true
-    //         });
+        // highlight state associated with symbol
+        // d3.select("g#states")
+        //     .select("path#state" + lookup[d.state])
+        //     .classed({
+        //         "highlight": true,
+        //         "state": true
+        //     });
 
-    //     // updateLog(d.city + ", " + d.state +
-    //     //     " received an average of " + d.precip +
-    //     //     " inches of precipitation.");
-    // }
+        updateLog(d.latitude + ", " + d.longitude +
+            " had an earthquake of " + d.mag +
+            " magnitude on " + d.time);
+    }
 
     // called on mouseout
     function hideHighlight(d) {
@@ -280,12 +291,12 @@ function symbolMap() {
         });
 
         // reset state associated with symbol
-        d3.select("g#states")
-            .select("path#state" + lookup[d.state])
-            .classed({
-                "highlight": false,
-                "state": true
-            });
+        // d3.select("g#states")
+        //     .select("path#state" + lookup[d.state])
+        //     .classed({
+        //         "highlight": false,
+        //         "state": true
+        //     });
 
         // reset log message
         updateLog();
