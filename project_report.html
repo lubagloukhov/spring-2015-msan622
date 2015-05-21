@@ -1,0 +1,79 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Project Report</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+        <center>
+          <h1>Project Report </h1>  
+          <h2>Speed Dating Dataset</h2>  
+          <a href="https://github.com/lubagloukhov"><h5>Luba Gloukhova</a> | <a href="mailto:lubagloukhov@gmail.com">lubagloukhov@gmail.com</a> | <a href="https://github.com/lubagloukhov/spring-2015-msan622/blob/gh-pages/project/">Project on Github</h5></a>
+  
+          <p></p>
+        </center>
+          <hr>
+        </div>
+
+<h5><a href="project/project_report2.html"><h5>See the Project Here</a> </h5>
+
+<h3>Discussion</h3>
+<h4>Techniques</h4> <ul>
+  <li><p> My dataset was fairly wide and long to begin with. In preprocessing the data for each of the visualizations, I grouped and aggregated the individual observations in order to reduce the dimensionality. Each of the visualizations is originally based on an implementation featured on <a href="http://bl.ocks.org/mbostock/">bl.ocks.org/mbostock</a>.</p></li>
+  <li><p>My main plot shows the distribution of attractiveness ratings assigned to individuals by their speed dating dating partners (variable "attr_o") in the form of a bar plot of the number of observations falling into each integer rating between 0 and 10. Because actual ratings were assigned to the nearest 1st decimal place, I defined the rating categories to be within .5 of a given integer. For example, the rating category 5 would include all observations  pertaining to ratings between 4.5 and 5.5 (right hand side inclusive). The number of observations falling into each interval was computed using the dplyr package in R. Not surprisingly, the distribution is fairly normal with most ratings fall in the middle ground.</p></li>
+  <li><p>This main plot serves as the main point of interaction, allowing the user to select a rating category to filter subsequent plots. The smaller bar plots to the right show the distribution of how they were rated on various attributes (top) and how they rated themselves on those same attributes (bottom). These attributes have been abbreviated: "Attractive", "Sincere", "Intelligent", "Fun", "Ambitious", "Shared Interests". Note that individuals were not asked to rate themselves on "Shared Interests" and this bar has been left out of the visualization.  My design choice was to have the colors of the bars of this plot reflect the color of the bar pertaining to the selected interval in the main plot. These plots initially show the mean score of each attribute across all observations and can be filtered to only include a particular attractiveness interval by interacting with the aforementioned main plot. The bars can be reset to show the mean values by clicking the Reset button on the upper left hand side of the visualization. The mean score of each attribute under the two categories for each attractiveness interval was computed using the dplyr package in R. As such, we can see that overall, regardless of how attractive the individuals are perceived, their self-perceived attractiveness remains fairly static. Inidividuals tend to rate themselves fairly evenly across the board of all attributes but the less attractive an individual is, the wider the range of their scores across attributes. Not surprisingly, attractive individuals are rated highly across all categories and unattractive individuals score poorly in non-attractiveness relates attributes such as Fun.</p></li>
+  <li><p>My main plot allows the user to select a rating category to also add data to the subsequent parallel coordinates plot. The parallel coordinates plot shows information regarding the interest in particular activities ("sports", "tvsports", "exercise", "dining", "museums", "hiking", "clubbing", "tv", "theater", "movies", "concerts", "music", "shopping", "yoga", variables named as such): how much the interest of a particular attractiveness interval deviates from the average interest across all observations. This plot initially shows 0 across all categories: the deviation from the average across all observations of the average across all observations. By interacting with the top bar plot, lines are added to the plot for each attractiveness interval. The normalization and aggregation of the activity scores for each attractiveness interval was computed using the dplyr package in R. I have made a design choice to leave the previously selected lines in the chart to allow the user to compare the distribution of interest across attractiveness intervals. By clicking on each of the bars in the main chart and consequently adding lines for each of the corresponding intervals in the parallel coordinates plot, we can see that interest in exercise has the widest range and interest in tv-sports has the narrowest range. We can conclude that tvsports is not a major differentiator between attractiveness categories whereas exercise is. </p></li>
+  <li><p>Finally, in order to assist in the interpretation of the parallel coordinates plot, I have added a box and whisker chart displaying the distribution of interest in the aforementioned activities across all observations. This plot did not require much preprocessing in R: I subset the data to include all rows but only those columns pertaining to the activities and the attractiveness interval described above. We can see that tvsports has a broader range than exercise across all observations -- though individual preference for watching sports on TV may differ greatly, it does not differ greatly when comparing attractiveness interval groups. </p></li>
+  <li><p>When it comes to each of my visualizations, the context is clear and the design does not distort the data. The lie factor of this visualization as a whole is 1 — the size of the effect shown in graphic is equal to the size of the effect in the data.  This graphic does not exhibit excessive use of ink. The data-ink is approximately equal to the total ink used in graphic. I have concerted effort to keep the ink ratio to the minimum given the amount of information involved. For example, in my implementation of parallel coordinates, I have purposely chosen to leave out the y-axis scales -- it is not vital for the the aforementioned type of interpretation and adds a lot of unnecessary clutter due to the number of categories involved. I would conclude that the data ink ratio is near the maximal possible value without loss of information.  The data density of the graphic is fairly high, in general, though most of the data pertains to aggregations not individual observations. </p></li>
+  <li><p>My visualization excels at providing exploratory insights into a small sliver of the data: how mean values of various categories vary by attractiveness. Because of the mix of interactive filtering and general all-observation overview, the user is able to not only compare between attractiveness groups but also how a given group relates to the overall population. The visualizations I chose convey the highest amount of information with minimal distortion and minimal clutter -- simple, easy to read bar charts; clean, paired-down parallel coordinates plot; information rich, static box and whisker plot.</p></li></ul>
+
+
+<h4>Interactivity</h4> <ul>
+
+
+
+  <li><p>My main plot serves as the main point of interaction, allowing the user to select a rating category to filter the smaller bar plot and the parallel coordinates plot. The filtering allows the user to focus in on a subset of the data and compare across subsets. By working with aggregated data, the inter-subset comparison can be iterated through quickly without waiting for large datasets to load and process. </p></li>
+  <li><p>The smaller bar plots of the distribution of attribute scores and self-scores initially shows the mean of importance score of each attribute across all observations and can be filtered to only include a particular attractiveness interval by interacting with the aforementioned main plot. These bars can be reset to show the initial mean values by clicking the reset button in the upper left hand corner. The parallel coordinates plot of deviations of normalized activity interests initially shows the deviation of the population from the population (clearly, a deviation of 0). Lines pertaining to attractiveness categories can be added to the plot by interacting with the main plot. By choosing to leave in all lines in the parallel coordinate lot, I have provided the user the ability to derive valuable insights of how interest varies across group aggregates leading to insight as to which activities differentiate between attractiveness categories (activities such as the aforementioned exercise as well as sports and yoga).</p></li></ul>
+
+<h4>Feedback</h4> <ul>
+
+
+  <li><p>The prototype that I implemented in class contained just the static box and whisker chart at the bottom of my visualization. I initially envisioned this being an interactive plot with the user's selection of attractiveness interval filtering the data shown. Having plotted the initial box and whisker plot, I realized that moving boxes and whiskers would be overwhelming given the number of activities involved. The feedback lead me to decide to filter this chart to just show a specific subset of activities. Upon exploring the data and experimenting with parallel coordinates, I decided against this. There is value in being able to see all of the activities side by side. The box plot gives insight into the overall distribution of activity interest across all attractiveness intervals while the parallel coordinates plot provides information on how average interest varies by interval. Combined, the two plots give a wealth of information in a clean and concise manner that does not overwhelm the user like mobile boxes and whiskers would. </p></li></ul>
+
+<h4>Challenges</h4> <ul>
+
+
+  <li><p>My initial visualization sketch includes an interactive, horizontal, two-sided, stacked bar chart. I ran into trouble in implemnting this in D3 in a way that was well suited for the rest of my visualization plan. I decided to implement just a basic intervative main bar chart and circle back around to iteratively inching closer to the horizontal, two-sided, stacked ideal I envisioned. Due to time constraints, the bar chart remains at its initial implementation. I would like to have had the two small bar plots to the right share the axis of attributes as these are common across plots. Unfortunately, I ran into trouble implementing this within the time constraints.</p></li>
+  <li><p>My initial visualization plan included interactivity that affects the box and whisker plot as well. I had little trouble implenting a static box and whisker chart but was unable to make it interactive. Ultimately, I see this as having benefited by visualazition. Moving boxes and whiskers would be overwhelming given the number of activities involved. The cross-interval comparison is facilitated much better with the parallel coordinates plot. </p></li>
+  <li><p>Finally, I wanted to have the lines of the parallel coordinate plot to be colored by the group or attractiveness interval  and to provide the ability to remove of all lines by clicking on the white space of the plot. However, due to time constraints, this functionality remains un-implemented. I also wanted to perfectly line up the x-axes of the parallel coordinates plot and the box and whisker plot for ease in comparison. </p></li>
+  <li><p>In summary, my biggest challenge in this visualization was accomplishing everything I envisioned within the given time constraints. Had this been an ongoing project, I would be able to implement and improve upon all of the functionality I envisioned.</p></li></ul> 
+
+<h4>Conclusion</h4> <ul>
+
+
+  <li><p>In my intial exploration of this dataset, I was both excited and overwhelmed. The dataset is fairly long and exceptionally wide. There have been many interesting insights derived from the dataset in the research and analysis space but, to date, little to no visualizations exist online! Thus, it was difficult to narrow in on a focus. </p></li>
+  <li><p>Ultimately, I decided to explore how perceived attractiveness (how the dating partner rates the individual) relates to an indivuidual's ratings across other attributes and their perception of how their rate across those attributes. Surprisingly, regardless of how attractive the individuals are perceived, their self-perceived attractiveness remains fairly static. Individuals tend to rate themselves fairly evenly across the board of all attributes. However, when it comes to other people rating them, the less attractive an individual is, the wider the range of their scores across attributes. Not surprisingly, attractive individuals are rated highly across all categories and unattractive individuals score poorly on non-attractiveness relates attributes such as Fun. </p></li><li><p>Further, I was initially really interested in how interest in various activities varies by attractiveness. From the combination of the parallel coordinates and box and whisker we can see that interest in exercise , yoga and dining serve as the greatest differentiators between attractiveness level. If we were to conduct multivariate statistical analysis in order to determine which factors differentiate groups of attractiveness levels, I imagine that these three activities would play a pivotal role. Moving forward, I would love to explore this by running the statical analyses and incorporating the results into my visualization.</p></li></ul>
+
+
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
