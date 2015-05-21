@@ -1,0 +1,447 @@
+<!doctype html>
+<html>
+
+<style type="text/css">
+
+
+  .axis path, .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+  }
+
+
+  .axis text {
+    font-family: sans-serif;
+    font-size: 11px;
+  }
+
+  .point {
+    fill: steelblue;
+    stroke: #000;
+  }
+
+  .axis,
+  .frame {
+    shape-rendering: crispEdges;
+  }
+
+  .axis line {
+    stroke: #ddd; 
+  }
+
+  .axis path {
+    display: none; 
+  }
+
+  .frame {
+    fill: none;
+    stroke: #aaa;
+  }
+
+  svg {
+    font: 10px sans-serif;
+  }
+
+  .background path {
+    fill: none;
+    stroke: #ccc;
+    stroke-opacity: .4;
+    shape-rendering: crispEdges;
+  }
+
+  .foreground path {
+    fill: none;
+    stroke: steelblue;
+    stroke-opacity: .7;
+  }
+
+  .brush .extent {
+    fill-opacity: .3;
+    stroke: #fff;
+    shape-rendering: crispEdges;
+  }
+
+  .axis text {
+    text-shadow: 0 1px 0 #fff;
+    cursor: move;}
+
+
+  .box {
+    font: 10px sans-serif;
+  }
+
+  .box line,
+  .box rect,
+  .box circle {
+    fill: steelblue;
+    stroke: #000;
+    stroke-width: 1px;
+  }
+
+  .box .center {
+    stroke-dasharray: 3,3;
+  }
+
+  .box .outlier {
+    fill: none;
+    stroke: #000;
+  }
+
+  /*for bar chart*/
+  .xAxis {
+      font-family: verdana;
+      font-size: 11px;
+      fill: black;
+  }  
+  .yAxis {
+      font-family: verdana;
+      font-size: 11px;
+      fill: white;
+  }
+
+  .bar:hover {
+    fill: #000000;
+  }
+  .x.axis path {
+    display: none;
+  }
+  .y.axis line, .y.axis path {
+    fill: none;
+    stroke: #100C34;
+    stroke-width: 2px;
+    font-size: 16px;
+  }
+  .y.axis text {
+      font-family: sans-serif;
+      font-size: 12px
+  }
+  .x.axis text {
+      font-family: sans-serif;
+      font-size: 11px;
+  }
+
+
+  #BAR_large_Chart {    
+    position:absolute;
+    top:50px;
+    left:10px;
+    width:500px;
+    height: 300px; 
+  }
+
+  #barChart {
+    position:absolute;
+    top: 50px;
+    left:550px;
+    width:200px;
+    height: 150px; 
+  }
+
+  #barChart2 {
+    position:absolute;
+    top:165px;
+    left:550px;
+    width:200px;
+    height: 150px; 
+  }
+
+  #PARA {
+    position:absolute;
+    left:50px;
+    top:300px;
+    width: 800px;
+  }
+  #WHISKY {
+    position:absolute;
+    top:550px;
+    left:20px;
+    height: 400px;
+    width: 800px;
+  }
+  }
+</style>
+  <head>
+    <title>Project Report</title>
+    
+    <script src="/js/d3.min.js"></script>
+    <script src="project_f_main.js"></script>
+    <script src="project_f_bar3.js"></script>
+    <script src="project_f_bar2.js"></script>
+    <script src="proj_f_whisk_new.js"></script>
+    <script src="project_f_para.js"></script>
+    <script src="box.js"></script>
+
+
+  </head>
+  <body>
+
+<div id="option">
+    <input name="updateButton" 
+                 type="button" 
+                value="Reset Small Bars" 
+                onclick="ResetData()" />
+</div>
+
+<div id="BAR_large_Chart"></div>
+
+  <div id="barChart" > </div>
+  <div id="barChart2"></div>
+  <svg id="PARA"></svg>
+  <svg id="WHISKY"></svg>
+
+
+<script type="text/javascript">
+
+/*################ FORMATS ##################*/
+
+var   formatAsPercentage = d3.format("%"),
+    formatAsPercentage1Dec = d3.format(".1%"),
+    formatAsInteger = d3.format(","),
+    fsec = d3.time.format("%S s"),
+    fmin = d3.time.format("%M m"),
+    fhou = d3.time.format("%H h"),
+    fwee = d3.time.format("%a"),
+    fdat = d3.time.format("%d d"),
+    fmon = d3.time.format("%b")
+    ;
+/*################ RESET BUTTON FUNCT ##################*/
+
+function ResetData() {
+  var group = "All";
+  // dsBarChart2();
+  // dsBarChart3();
+  // createPara();
+  i=0;
+
+        updateBarChart("All", "lightgrey");
+        updateBarChart2("All", "lightgrey");
+        updateParaChart("All", "lightgrey");
+}
+
+
+/*############# MAIN CHART ###################*/
+
+d3.json('data_main_bar.json', function(error, data_set) {
+    if (error) return console.warn(error);
+    var data=[];
+    for (var key in data_set ){
+        data.push(data_set[key]);
+      }
+    dsBAR_large_Chart(data);
+ 
+  });
+
+
+/*############# BAR CHART 2 ###################*/
+
+var datasetBarChart2;
+var group = "All";
+d3.json('data_atttrib5_bar.json', function(error, data_set2) {
+    if (error) return console.warn(error);
+    var data2=[];
+    for (var key in data_set2 ){
+        data2.push(data_set2[key]);
+      }
+  datasetBarChart2 = data2;
+  console.log("datasetBarChart2",datasetBarChart2);
+  dsBarChart2();
+  });
+
+
+/*############# BAR CHART 3 ###################*/
+
+var datasetBarChart;
+var group = "All";
+d3.json('data_atttribO_bar.json', function(error, data_set) {
+    if (error) return console.warn(error);
+    var data=[];
+    for (var key in data_set ){
+        data.push(data_set[key]);
+      }
+  datasetBarChart3 = data;
+  console.log("datasetBarChart3",datasetBarChart3);
+  dsBarChart3();
+  });
+
+
+
+/*############# WHISK CHART ###################*/
+
+var labels = false;
+
+var margin = {top: 30, right: 50, bottom: 70, left: 50};
+var  width = 820 - margin.left - margin.right;
+var height = 400 - margin.top - margin.bottom;
+  
+var min = Infinity,
+    max = -Infinity;
+  
+
+var datasetWhiskChart;
+var group = "(0.5,1.5]";
+
+  
+d3.csv("sd_bw_m_prttp2.csv", function(error, csv) {
+  var data = []; data[0] = []; data[1] = []; data[2] = []; data[3] = []; data[4] = []; data[5] = []; data[6] = []; data[7] = []; data[8] = []; data[9] = []; data[10] = []; data[11] = []; data[12] = []; data[13] = [];
+
+  // the header of the csv file
+  data[0][0] = "sports"; data[1][0] = "tvsports"; data[2][0] = "exercise"; data[3][0] = "dining"; data[4][0] = "museums"; data[5][0] = "hiking"; data[6][0] = "clubbing"; data[7][0] = "tv"; data[8][0] = "theater"; data[9][0] = "movies"; data[10][0] = "concerts"; data[11][0] = "music"; data[12][0] = "shopping"; data[13][0] = "yoga";
+
+  data[0][1] = []; data[1][1] = []; data[2][1] = []; data[3][1] = []; data[4][1] = []; data[5][1] = []; data[6][1] = []; data[7][1] = []; data[8][1] = []; data[9][1] = []; data[10][1] = []; data[11][1] = []; data[12][1] = []; data[13][1] = [];
+  
+  csv.forEach(function(x) {
+    var v1 = Math.floor(x.sports),
+      v2 = Math.floor(x.tvsports),
+      v3 = Math.floor(x.exercise),
+      v4 = Math.floor(x.dining),
+      v5 = Math.floor(x.museums),
+      v6 = Math.floor(x.hiking),
+      v7 = Math.floor(x.clubbing),
+      v8 = Math.floor(x.tv),
+      v9 = Math.floor(x.theater),
+      v10 = Math.floor(x.movies)
+      v11 = Math.floor(x.concerts),
+      v12 = Math.floor(x.music),
+      v13 = Math.floor(x.shopping),
+      v14 = Math.floor(x.yoga);
+      // add more variables if your csv file has more columns
+      
+    var rowMax = Math.max(v1, 
+      Math.max(v2, 
+        Math.max(v3,
+          Math.max(v4,
+            Math.max(v5,
+              Math.max(v6,
+                Math.max(v7,
+                  Math.max(v8,
+                    Math.max(v9,
+                      Math.max(v10,
+                        Math.max(v11,
+                          Math.max(v12,
+                            Math.max(v13,v14)))))))))))));    
+    var rowMin = Math.min(v1, 
+      Math.min(v2, 
+        Math.min(v3,
+          Math.min(v4,
+            Math.min(v5,
+              Math.min(v6,
+                Math.min(v7,
+                  Math.min(v8,
+                    Math.min(v9,
+                      Math.min(v10,
+                        Math.min(v11,
+                          Math.min(v12,
+                            Math.min(v13,v14)))))))))))));
+
+    data[0][1].push(v1); data[1][1].push(v2); data[2][1].push(v3); data[3][1].push(v4); data[4][1].push(v5); data[5][1].push(v6); data[6][1].push(v7); data[7][1].push(v8); data[8][1].push(v9); data[9][1].push(v10); data[10][1].push(v11); data[11][1].push(v12); data[12][1].push(v13); data[13][1].push(v14);
+     
+    if (rowMax > max) max = rowMax;
+    if (rowMin < min) min = rowMin; 
+  });
+
+datasetWhiskChart = data; 
+console.log(datasetWhiskChart,"datasetWhiskChart");
+var chart = d3.box()
+    .whiskers(iqr(1.5))
+    .height(height) 
+    .domain([min, max])
+    .showLabels(labels);
+
+    var svg = d3.select("#WHISKY").append("svg:svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .attr("class", "box")    
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  var x = d3.scale.ordinal()     
+    .domain( data.map(function(d) {  return d[0] } ) )     
+    .rangeRoundBands([0 , width], 0.7, 0.3);    
+
+  var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom")
+    ;
+
+  var y = d3.scale.linear()
+    .domain([min, max])
+    .range([height + margin.top, 0 + margin.top]);
+  
+  var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left");
+ 
+  svg.selectAll(".box")    
+      .data(data)
+    .enter().append("g")
+    .attr("transform", function(d) { return "translate(" +  x(d[0])  + "," + margin.top + ")"; } )
+      .call(chart.width(x.rangeBand())); 
+  
+  svg.append("text")
+        .attr("x", (width / 2))             
+        .attr("y", -10 )
+        .attr("text-anchor", "middle")  
+        .style("font-size", "26px") 
+        //.style("text-decoration", "underline")  
+        .text("Personal Interest Rating of Various Activities");
+ 
+  svg.append("g")
+        .attr("class", "y axis")
+        .call(yAxis)
+    .append("text")
+      .attr("x", 0)
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .style("font-size", "16px") 
+      .text("Rating");    
+  
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + (height  + margin.top + 10) + ")")
+      .call(xAxis)
+    .append("text")             // text label for the x axis
+        .attr("x", 0)
+        .attr("y",  10 )
+    .attr("dy", ".71em")
+        .style("text-anchor", "end")
+    .style("font-size", "16px"); 
+});
+
+function iqr(k) {
+  return function(d, i) {
+    var q1 = d.quartiles[0],
+        q3 = d.quartiles[2],
+        iqr = (q3 - q1) * k,
+        i = -1,
+        j = d.length;
+    while (d[++i] < q1 - iqr);
+    while (d[--j] > q3 + iqr);
+    return [i, j];
+  };
+}
+
+/*############# PARA CHART ###################*/
+
+var datasetParaChart;
+var group = "All";
+  d3.csv("data_activities_para.csv", function(error, data_set) {
+    if (error) return console.warn(error);
+      var data=[];
+      for (var key in data_set ){
+          data.push(data_set[key]);
+        }
+
+  datasetParaChart = data;
+  cleanData();
+  console.log("para", datasetParaChart);
+
+    createPara();
+  });
+
+  </script>
+
+
+      </body>
+</html>
