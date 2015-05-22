@@ -347,7 +347,7 @@ d3.csv("sd_bw_m_prttp2.csv", function(error, csv) {
 
 datasetWhiskChart = data; 
 console.log(datasetWhiskChart,"datasetWhiskChart");
-var chart = d3.box()
+var chart = boxy()
     .whiskers(iqr(1.5))
     .height(height) 
     .domain([min, max])

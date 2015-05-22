@@ -107,9 +107,9 @@ var color = color = d3.scale.category20() ;
   }
   }
 
-  
+
 // Inspired by http://informationandvisualization.de/blog/box-plot
-d3.box = function() {
+function boxy = () {
   var width = 1,
       height = 1,
       duration = 0,
