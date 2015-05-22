@@ -108,18 +108,18 @@ function dsBarChart2() {
         .attr("transform", "translate(" + margin.left + "," + (margin.top + height)  + ")")
         ;
   
-  xLabels.selectAll("text.xAxis")
-      .data(firstDatasetBarChart2)
-      .enter()
-      .append("text")
-      .text(function(d) { return d.category;})
-      .attr("text-anchor", "middle")
-               .attr("x", function(d, i) {
-                  return (i * (width / firstDatasetBarChart2.length)) + ((width / firstDatasetBarChart2.length - barPadding) / 2);
-               })
-      .attr("y", 20)
-      .attr("class", "xAxis")
-      ;     
+  // xLabels.selectAll("text.xAxis")
+  //     .data(firstDatasetBarChart2)
+  //     .enter()
+  //     .append("text")
+  //     .text(function(d) { return d.category;})
+  //     .attr("text-anchor", "middle")
+  //              .attr("x", function(d, i) {
+  //                 return (i * (width / firstDatasetBarChart2.length)) + ((width / firstDatasetBarChart2.length - barPadding) / 2);
+  //              })
+  //     .attr("y", 20)
+  //     .attr("class", "xAxis")
+  //     ;     
    
 }
 

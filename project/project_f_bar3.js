@@ -116,7 +116,7 @@ function dsBarChart3() {
                .attr("x", function(d, i) {
                   return (i * (width / firstDatasetBarChart2.length)) + ((width / firstDatasetBarChart2.length - barPadding) / 2);
                })
-      .attr("y", 0)
+      .attr("y", 50)
       .attr("class", "xAxis")
       ;     
    
