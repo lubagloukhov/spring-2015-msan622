@@ -188,15 +188,6 @@ function updateBarChart(group, colorChosen) {
     ;
     
 
-    svg.selectAll("text.title") 
-      .attr("x", (width + margin.left + margin.right)/2)
-      .attr("y", 15)
-      .attr("class","title")        
-      .attr("text-anchor", "middle")
-      .text('Rating Breakdown for '+group + " across rating sources")
-    ;
-
-
      var svg = d3.select("#barChart svg");
         
      var plot = d3.select("#barChartPlot")
@@ -236,5 +227,19 @@ function updateBarChart(group, colorChosen) {
        })
        .attr("class", "yAxis")           
     ;
+
+    
+  xLabels.selectAll("text.xAxis")
+      .data(firstDatasetBarChart2)
+      .enter()
+      .append("text")
+      .text(function(d) { return d.category;})
+      .attr("text-anchor", "middle")
+               .attr("x", function(d, i) {
+                  return (i * (width / firstDatasetBarChart2.length)) + ((width / firstDatasetBarChart2.length - barPadding) / 2);
+               })
+      .attr("y", 20)
+      .attr("class", "xAxis")
+      ;     
 }
 
